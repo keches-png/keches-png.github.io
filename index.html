@@ -13,8 +13,8 @@
         body {
             font-family: 'Inter', sans-serif;
             overscroll-behavior-y: none; /* Prevent pull-to-refresh */
-            /* Added Subtle Gradient Background */
-            background: linear-gradient(135deg, #f3e9f9 0%, #e8eaf6 100%);
+            /* Set background to white */
+            background-color: #ffffff;
         }
         /* Loader styles */
         #loader {
@@ -28,7 +28,7 @@
             z-index: 50;
             transition: opacity 0.5s ease-out;
         }
-        #loader img { /* Now targets the img tag */
+        #loader img {
             width: 80px;
             height: 80px;
             animation: pulse 1.5s infinite ease-in-out;
@@ -63,34 +63,35 @@
         .bg-pi-purple { background-color: #5A2D82; }
         .text-pi-yellow { color: #F5C65A; }
         .border-pi-purple-light { border-color: #a47ac4; }
-        .bg-pi-purple-light { background-color: #f3e9f9; }
+        .bg-pi-purple-light { background-color: #f3e9f9; } /* Reverted for potential use */
         .text-pi-purple { color: #5A2D82; }
 
-        /* Icon box style */
+        /* Icon box style - Reverted to solid white */
         .icon-box {
-             width: 4.5rem; /* ~72px */
-             height: 4.5rem; /* ~72px */
+             width: 4.5rem;
+             height: 4.5rem;
              margin-bottom: 0.5rem;
-             background-color: white;
-             border-radius: 0.5rem; /* rounded-lg */
+             background-color: white; /* Solid white */
+             border-radius: 0.5rem;
              display: flex;
              align-items: center;
              justify-content: center;
-             border: 1px solid #dcd1e8; /* Lighter border */
-             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); /* Adjusted shadow */
+             border: 1px solid #e5e7eb; /* Standard light border */
+             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
              transition: transform 0.2s ease-in-out;
              overflow: hidden;
         }
         .icon-box:hover {
-            transform: translateY(-2px); /* Slight lift on hover */
+            transform: translateY(-2px);
         }
+        /* Icon label text color reverted */
         .icon-label {
-             font-size: 0.75rem; /* text-xs */
-             font-weight: 500; /* font-medium */
+             font-size: 0.75rem;
+             font-weight: 500; /* Reverted */
              text-align: center;
              color: #4a1d6e; /* Darker purple text */
              line-height: 1.2;
-             margin-top: 0.25rem; /* Add slight margin top for spacing */
+             margin-top: 0.25rem;
         }
 
         /* Header Gradient */
@@ -100,17 +101,25 @@
 
         /* Bottom Nav Styling */
         .bottom-nav {
-             background-color: white;
+             background-color: white; /* Solid white */
              border-top: 1px solid #e5e7eb;
+        }
+         /* Adjust welcome section colors */
+         .welcome-bg {
+             background: transparent; /* Remove previous gradient */
+         }
+         /* Section title color reverted */
+        .section-title {
+            color: #374151; /* Gray-800 */
+            font-weight: 600; /* Semibold */
         }
 
     </style>
 </head>
-<body>
+<body class="bg-white"> <!-- Added bg-white class for certainty -->
 
     <!-- Loader -->
     <div id="loader">
-        <!-- ### Using your main logo URL ### -->
         <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/pi_network.png" alt="Loading Logo" class="rounded-full">
         <p class="loader-text">Loading Pi Network...</p>
     </div>
@@ -132,107 +141,107 @@
         </header>
 
         <!-- Welcome Section -->
-        <section class="text-center py-8 px-4 bg-gradient-to-b from-white to-transparent">
-             <!-- ### Using your main logo URL ### -->
+        <section class="text-center py-8 px-4 welcome-bg">
             <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/pi_network.png" alt="Pi Logo" class="h-16 w-16 rounded-full mx-auto mb-3 border-4 border-white shadow-lg">
-            <h2 class="text-2xl font-bold text-pi-yellow mb-2" style="text-shadow: 1px 1px 3px rgba(90,45,130,0.5);">Welcome to the Pi Ecosystem</h2>
+             <!-- Welcome text color adjusted -->
+            <h2 class="text-2xl font-bold text-pi-purple mb-2">Welcome to the Pi Ecosystem</h2>
         </section>
 
         <!-- Core Team Apps Section -->
         <section class="px-4 py-4 max-w-5xl mx-auto">
             <div class="flex justify-between items-center mb-5">
-                 <h3 class="text-lg font-semibold text-gray-800">Core Team Apps</h3>
+                 <h3 class="text-lg section-title">Core Team Apps</h3>
                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" /></svg>
             </div>
 
             <!-- Grid of App Icons (14 icons), ALL linking to request.html -->
             <div class="grid grid-cols-3 gap-y-6 gap-x-4">
                  <!-- Fireside -->
-                 <a href="request.html" class="flex flex-col items-center"> <!-- Changed Link -->
+                 <a href="request.html" class="flex flex-col items-center">
                     <div class="icon-box !p-0 overflow-hidden">
                        <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/fireside.jpg" alt="Fireside" class="w-full h-full object-cover">
                     </div>
                     <span class="icon-label">Fireside</span>
                 </a>
                 <!-- Unlock (using Wallet icon) -->
-                <a href="request.html" class="flex flex-col items-center"> <!-- Already linked -->
+                <a href="request.html" class="flex flex-col items-center">
                     <div class="icon-box !p-0 overflow-hidden">
                        <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/wallet.jpg" alt="Unlock" class="w-full h-full object-cover">
                     </div>
                     <span class="icon-label">Unlock</span>
                 </a>
                 <!-- Brainstorm -->
-                <a href="request.html" class="flex flex-col items-center"> <!-- Changed Link -->
+                <a href="request.html" class="flex flex-col items-center">
                     <div class="icon-box !p-0 overflow-hidden">
                        <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/brainstorm.jpg" alt="Brainstorm" class="w-full h-full object-cover">
                     </div>
                     <span class="icon-label">Brainstorm</span>
                 </a>
                 <!-- Mine -->
-                 <a href="request.html" class="flex flex-col items-center"> <!-- Changed Link -->
+                 <a href="request.html" class="flex flex-col items-center">
                     <div class="icon-box !p-0 overflow-hidden">
                        <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/mine.jpg" alt="Mine" class="w-full h-full object-cover">
                     </div>
                     <span class="icon-label">Mine</span>
                 </a>
                  <!-- Blockchain -->
-                 <a href="request.html" class="flex flex-col items-center"> <!-- Changed Link -->
+                 <a href="request.html" class="flex flex-col items-center">
                     <div class="icon-box !p-0 overflow-hidden">
                          <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/blockchain.jpg" alt="Blockchain" class="w-full h-full object-cover">
                     </div>
                     <span class="icon-label">Blockchain</span>
                 </a>
                  <!-- Develop -->
-                 <a href="request.html" class="flex flex-col items-center"> <!-- Changed Link -->
+                 <a href="request.html" class="flex flex-col items-center">
                     <div class="icon-box !p-0 overflow-hidden">
                         <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/develop.jpg" alt="Develop" class="w-full h-full object-cover">
                     </div>
                     <span class="icon-label">Develop</span>
                 </a>
                  <!-- KYC -->
-                 <a href="request.html" class="flex flex-col items-center"> <!-- Changed Link -->
+                 <a href="request.html" class="flex flex-col items-center">
                     <div class="icon-box !p-0 overflow-hidden">
                         <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/kyc.jpg" alt="KYC" class="w-full h-full object-cover">
                     </div>
                     <span class="icon-label">KYC</span>
                 </a>
                  <!-- Chat -->
-                 <a href="request.html" class="flex flex-col items-center"> <!-- Changed Link -->
+                 <a href="request.html" class="flex flex-col items-center">
                     <div class="icon-box !p-0 overflow-hidden">
                         <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/chat.jpg" alt="Chat" class="w-full h-full object-cover">
                     </div>
                     <span class="icon-label">Chat</span>
                 </a>
                  <!-- Profiles -->
-                 <a href="request.html" class="flex flex-col items-center"> <!-- Changed Link -->
+                 <a href="request.html" class="flex flex-col items-center">
                     <div class="icon-box !p-0 overflow-hidden">
                        <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/profile.jpg" alt="Profiles" class="w-full h-full object-cover">
                     </div>
                     <span class="icon-label">Profiles</span>
                 </a>
                  <!-- Domains -->
-                 <a href="request.html" class="flex flex-col items-center"> <!-- Changed Link -->
+                 <a href="request.html" class="flex flex-col items-center">
                     <div class="icon-box !p-0 overflow-hidden">
                         <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/domains.jpg" alt="Domains" class="w-full h-full object-cover">
                     </div>
                     <span class="icon-label">Domains</span>
                 </a>
                  <!-- App Studio -->
-                 <a href="request.html" class="flex flex-col items-center"> <!-- Changed Link -->
+                 <a href="request.html" class="flex flex-col items-center">
                     <div class="icon-box !p-0 overflow-hidden">
                         <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/app%20studio.jpg" alt="App Studio" class="w-full h-full object-cover">
                     </div>
                     <span class="icon-label">App Studio</span>
                 </a>
                  <!-- Dollar Exchange -->
-                 <a href="request.html" class="flex flex-col items-center"> <!-- Already linked -->
+                 <a href="request.html" class="flex flex-col items-center">
                     <div class="icon-box !p-0 overflow-hidden">
                          <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/dollar%20exchange.jpg" alt="Dollar Exchange" class="w-full h-full object-cover">
                     </div>
                     <span class="icon-label">Dollar Exchange</span>
                  </a>
                  <!-- Unlock (using Unlock icon) -->
-                 <a href="request.html" class="flex flex-col items-center"> <!-- Changed Link -->
+                 <a href="request.html" class="flex flex-col items-center">
                     <div class="icon-box !p-0 overflow-hidden">
                         <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/unlock.png" alt="Unlock" class="w-full h-full object-cover">
                     </div>
@@ -242,7 +251,6 @@
 
             </div>
         </section>
-
 
     </div><!-- End Main Content -->
 
