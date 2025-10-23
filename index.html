@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pi Network</title>
-    <!-- Load Tailwind CSS -->
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,15 +12,16 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            overscroll-behavior-y: none; /* Prevent pull-to-refresh */
-            /* Added Subtle Gradient Background */
-            background: linear-gradient(135deg, #f3e9f9 0%, #e8eaf6 100%);
+            overscroll-behavior-y: none;
+            /* Subtle lavender background tint */
+            background-color: #f3f4ff; 
+            padding-bottom: 70px;
         }
-        /* Loader styles */
+        /* Loader and Animation Styles */
         #loader {
             position: fixed;
             inset: 0;
-            background-color: #5A2D82; /* Pi Purple */
+            background-color: #5A2D82; 
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -28,23 +29,10 @@
             z-index: 50;
             transition: opacity 0.5s ease-out;
         }
-        #loader img { /* Now targets the img tag */
-            width: 80px;
-            height: 80px;
-            animation: pulse 1.5s infinite ease-in-out;
-        }
-        .loader-text {
-            margin-top: 1rem;
-            color: #F5C65A; /* Pi Yellow */
-            font-weight: 500;
-        }
-
         @keyframes pulse {
             0%, 100% { transform: scale(1); opacity: 1; }
             50% { transform: scale(1.1); opacity: 0.8; }
         }
-
-        /* Simple animation for message */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -53,68 +41,92 @@
             animation: fadeIn 0.5s ease-out forwards;
         }
 
-        /* Main content hidden initially */
-        #main-content {
-           padding-bottom: 70px; /* Space for bottom nav */
-        }
-
         /* Custom Pi Colors */
         .bg-pi-purple { background-color: #5A2D82; }
         .text-pi-yellow { color: #F5C65A; }
-        .border-pi-purple-light { border-color: #a47ac4; }
-        .bg-pi-purple-light { background-color: #f3e9f9; }
         .text-pi-purple { color: #5A2D82; }
-        /* .icon-fill-purple { fill: #5A2D82; } */ /* No longer needed for SVGs */
-
-        /* Icon box style */
+        
+        /* Icon box styles matching the Pi app's bright design */
         .icon-box {
-             width: 4.5rem; /* ~72px */
-             height: 4.5rem; /* ~72px */
+             width: 4.5rem; 
+             height: 4.5rem; 
              margin-bottom: 0.5rem;
              background-color: white;
-             border-radius: 0.5rem; /* rounded-lg */
-             display: flex; /* Kept for centering potential loading states */
-             align-items: center; /* Kept */
-             justify-content: center; /* Kept */
-             border: 1px solid #dcd1e8; /* Lighter border */
-             /* padding: 0.75rem; */ /* Removed as per user example */
-             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); /* Adjusted shadow */
-             transition: transform 0.2s ease-in-out;
-             /* Added overflow-hidden as per user example */
-             overflow: hidden;
+             border-radius: 0.75rem; 
+             display: flex; 
+             align-items: center; 
+             justify-content: center; 
+             /* Custom thick border/shadow effect (mixture of white and subtle shadow) */
+             border: 3px solid #f8f8f8; /* Thicker white edge */
+             box-shadow: 0 0 0 1px #5A2D82, 0 4px 8px rgba(0, 0, 0, 0.05); /* Inner purple outline + shadow */
+             transition: all 0.2s ease-in-out;
         }
         .icon-box:hover {
-            transform: translateY(-2px); /* Slight lift on hover */
+            transform: scale(1.05); 
+            box-shadow: 0 0 0 1px #5A2D82, 0 8px 20px rgba(90, 45, 130, 0.4); 
         }
         .icon-label {
-             font-size: 0.75rem; /* text-xs */
-             font-weight: 500; /* font-medium */
+             font-size: 0.75rem; 
+             font-weight: 500;
              text-align: center;
-             color: #4a1d6e; /* Darker purple text */
+             color: #4a1d6e;
              line-height: 1.2;
-             margin-top: 0.25rem; /* Add slight margin top for spacing */
+             margin-top: 0.25rem;
+        }
+        
+        /* Two-tone SVG Icon Style: Light Blue Fill, Purple Outline */
+        .svg-icon {
+            width: 55%; 
+            height: 55%;
+            fill: #e8f0ff; /* Light Blue Fill (inside the icon shape) */
+            stroke: #5A2D82; /* Purple Outline */
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
-        /* Header Gradient */
-        .header-gradient {
-            background: linear-gradient(to right, #5A2D82, #7b42aa);
+        /* Official Pi Logo SVG Style */
+        .pi-logo-svg {
+            fill: currentColor; 
+            stroke: none;
+        }
+        
+        /* Specific styling for the Earth Card */
+        .majestic-earth-card {
+             /* Using the provided background image URL */
+             background-image: url('https://i.imgur.com/G3t6YhQ.jpeg'); /* Placeholder for your uploaded 1000346671.jpg */
+             background-size: cover;
+             background-position: center;
+             /* Enhanced filter for a vibrant, majestic look */
+             filter: brightness(1.1) contrast(1.1); 
         }
 
-        /* Bottom Nav Styling */
-        .bottom-nav {
-             background-color: white;
-             border-top: 1px solid #e5e7eb;
+        /* OKX Custom Icon Style (Simulated) */
+        .okx-icon-svg {
+             width: 70%;
+             height: 70%;
+             color: black;
+             fill: none;
+             stroke: black;
+             stroke-width: 2;
         }
-
 
     </style>
 </head>
 <body>
 
+    <!-- Pi Logo Component for re-use (official, high-fidelity design) -->
+    <svg id="pi-logo" style="display: none;">
+        <symbol id="pi-symbol" viewBox="0 0 100 100">
+            <path d="M50 8C27.907 8 10 25.907 10 50s17.907 42 40 42 40-17.907 40-42S72.093 8 50 8zm-5 22h10v10h-6v30h-4V40h-6v-10zm25 10a15 15 0 010 30" fill="currentColor"/>
+        </symbol>
+    </svg>
+
     <!-- Loader -->
     <div id="loader">
-        <!-- Replace placeholder URL with your actual logo URL -->
-        <img src="https://placehold.co/80x80/F5C65A/5A2D82?text=Pi" alt="Loading Logo" class="rounded-full">
+        <svg style="width: 80px; height: 80px; color: #F5C65A; animation: pulse 1.5s infinite ease-in-out;">
+            <use xlink:href="#pi-symbol"></use>
+        </svg>
         <p class="loader-text">Loading Pi Network...</p>
     </div>
 
@@ -122,12 +134,17 @@
     <div id="main-content" class="hidden">
 
         <!-- Header -->
-        <header class="header-gradient text-white py-4 px-5 sticky top-0 z-10 shadow-md">
+        <header class="bg-pi-purple text-white py-4 px-5 sticky top-0 z-10 shadow-md">
             <div class="max-w-5xl mx-auto flex items-center justify-between">
                 <button class="text-white opacity-75 hover:opacity-100">
                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
                 </button>
-                <h1 class="text-xl font-semibold">Home</h1>
+                <h1 class="text-xl font-semibold flex items-center">
+                    Home
+                    <svg style="height: 20px; width: 20px; margin-left: 8px; color: #F5C65A;">
+                        <use xlink:href="#pi-symbol"></use>
+                    </svg>
+                </h1>
                 <button class="text-white opacity-75 hover:opacity-100">
                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
                 </button>
@@ -135,138 +152,272 @@
         </header>
 
         <!-- Welcome Section -->
-        <section class="text-center py-8 px-4 bg-gradient-to-b from-white to-transparent">
-             <!-- Replace placeholder URL with your actual logo URL -->
-            <img src="https://placehold.co/60x60/F5C65A/5A2D82?text=Pi" alt="Pi Logo Placeholder" class="h-16 w-16 rounded-full mx-auto mb-3 border-4 border-white shadow-lg">
-            <h2 class="text-2xl font-bold text-pi-yellow mb-2" style="text-shadow: 1px 1px 3px rgba(90,45,130,0.5);">Welcome to the Pi Ecosystem</h2>
-        </section>
-
-        <!-- Core Team Apps Section -->
-        <section class="px-4 py-4 max-w-5xl mx-auto">
-            <div class="flex justify-between items-center mb-5">
+        <section class="text-center py-8 px-4">
+            <h2 class="text-lg font-semibold text-pi-yellow mb-4">Welcome to the Pi Ecosystem</h2>
+            <!-- Core Team Apps Header -->
+            <div class="flex justify-between items-center mb-5 max-w-lg mx-auto">
                  <h3 class="text-lg font-semibold text-gray-800">Core Team Apps</h3>
                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" /></svg>
             </div>
+        </section>
 
-            <!-- Grid of App Icons using IMG placeholders -->
+        <!-- Core Team Apps Grid -->
+        <section class="px-4 max-w-lg mx-auto">
             <div class="grid grid-cols-3 gap-y-6 gap-x-4">
-                 <!-- Fireside -->
+                 
+                <!-- 1. Fireside -->
                  <a href="#" class="flex flex-col items-center">
-                    <div class="icon-box !p-0 overflow-hidden">
-                       <img src="URL_TO_YOUR_FIRESIDE_ICON.png" alt="Fireside" class="w-full h-full object-cover">
+                    <div class="icon-box">
+                        <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor">
+                            <path d="M12.5 17.5c-2.5 0-4.5-2-4.5-4.5s2-4.5 4.5-4.5 4.5 2 4.5 4.5-2 4.5-4.5 4.5zM12 21v-1M12 4V3M19 12h-1M5 12H4M16.9 16.9l-0.7-0.7M7.8 7.8l-0.7-0.7M16.9 7.1l-0.7 0.7M7.8 16.2l-0.7 0.7"/>
+                        </svg>
                     </div>
                     <span class="icon-label">Fireside</span>
                 </a>
-                <!-- Unlock -->
+                
+                <!-- 2. Unlock (Wallet icon used, link preserved) -->
                 <a href="request.html" class="flex flex-col items-center">
-                    <div class="icon-box !p-0 overflow-hidden">
-                       <img src="URL_TO_YOUR_UNLOCK_ICON.png" alt="Unlock" class="w-full h-full object-cover">
+                    <div class="icon-box">
+                        <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                            <path d="M16 4.5V7a.5.5 0 01-.5.5h-7a.5.5 0 01-.5-.5V4.5M12 15a2 2 0 100-4 2 2 0 000 4z"/>
+                            <path d="M2 9h20"/>
+                        </svg>
                     </div>
                     <span class="icon-label">Unlock</span>
                 </a>
-                <!-- Brainstorm -->
+
+                <!-- 3. Brainstorm -->
                 <a href="#" class="flex flex-col items-center">
-                    <div class="icon-box !p-0 overflow-hidden">
-                       <img src="URL_TO_YOUR_BRAINSTORM_ICON.png" alt="Brainstorm" class="w-full h-full object-cover">
+                    <div class="icon-box">
+                        <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor">
+                            <path d="M12 22s-2-3-2-5c0-2 1-3 2-3s2 1 2 3c0 2-2 5-2 5zM15 8c2.8 0 5 2.2 5 5 0 2.8-2.2 5-5 5s-5-2.2-5-5c0-2.8 2.2-5 5-5z"/>
+                            <path d="M19 13l-4-4M15 17l-4-4"/>
+                        </svg>
                     </div>
                     <span class="icon-label">Brainstorm</span>
                 </a>
-                <!-- Mine -->
+                
+                <!-- 4. Mine -->
                  <a href="#" class="flex flex-col items-center">
-                    <div class="icon-box !p-0 overflow-hidden">
-                       <img src="URL_TO_YOUR_MINE_ICON.png" alt="Mine" class="w-full h-full object-cover">
+                    <div class="icon-box">
+                        <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor">
+                            <path d="M12 2L6 5v6c0 5.5 6 9 6 9s6-3.5 6-9V5l-6-3z"/>
+                            <path d="M12 18v-6"/>
+                        </svg>
                     </div>
                     <span class="icon-label">Mine</span>
                 </a>
-                 <!-- Blockchain -->
+
+                 <!-- 5. Blockchain -->
                  <a href="#" class="flex flex-col items-center">
-                    <div class="icon-box !p-0 overflow-hidden">
-                         <img src="URL_TO_YOUR_BLOCKCHAIN_ICON.png" alt="Blockchain" class="w-full h-full object-cover">
+                    <div class="icon-box">
+                        <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor">
+                            <rect x="3" y="11" width="5" height="5" rx="1"/>
+                            <rect x="9.5" y="11" width="5" height="5" rx="1"/>
+                            <rect x="16" y="11" width="5" height="5" rx="1"/>
+                            <path d="M8 13.5h1.5M14.5 13.5h1.5"/>
+                            <path d="M6 6l-3 3M18 18l3 3M6 18l-3-3M18 6l3 3"/>
+                        </svg>
                     </div>
                     <span class="icon-label">Blockchain</span>
                 </a>
-                 <!-- Develop -->
+
+                 <!-- 6. Develop -->
                  <a href="#" class="flex flex-col items-center">
-                    <div class="icon-box !p-0 overflow-hidden">
-                        <img src="URL_TO_YOUR_DEVELOP_ICON.png" alt="Develop" class="w-full h-full object-cover">
+                    <div class="icon-box">
+                        <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor">
+                            <rect x="4" y="6" width="16" height="12" rx="2"/>
+                            <path d="M8 12l-2 2 2 2M16 12l2 2-2 2M10 12h4"/>
+                        </svg>
                     </div>
                     <span class="icon-label">Develop</span>
                 </a>
-                 <!-- KYC -->
+
+                 <!-- 7. KYC -->
                  <a href="#" class="flex flex-col items-center">
-                    <div class="icon-box !p-0 overflow-hidden">
-                        <img src="URL_TO_YOUR_KYC_ICON.png" alt="KYC" class="w-full h-full object-cover">
+                    <div class="icon-box">
+                        <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor">
+                             <rect x="3" y="3" width="18" height="18" rx="2"/>
+                             <circle cx="12" cy="9" r="3"/>
+                             <path d="M6 17c.5-1 1-1.5 6-1.5s5.5.5 6 1.5"/>
+                        </svg>
                     </div>
                     <span class="icon-label">KYC</span>
                 </a>
-                 <!-- Chat -->
+
+                 <!-- 8. Chat -->
                  <a href="#" class="flex flex-col items-center">
-                    <div class="icon-box !p-0 overflow-hidden">
-                        <img src="URL_TO_YOUR_CHAT_ICON.png" alt="Chat" class="w-full h-full object-cover">
+                    <div class="icon-box">
+                        <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor">
+                            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z"/>
+                            <path d="M8 10h.01M12 10h.01M16 10h.01"/>
+                        </svg>
                     </div>
                     <span class="icon-label">Chat</span>
                 </a>
-                 <!-- Profiles -->
+
+                 <!-- 9. Profiles -->
                  <a href="#" class="flex flex-col items-center">
-                    <div class="icon-box !p-0 overflow-hidden">
-                       <img src="URL_TO_YOUR_PROFILES_ICON.png" alt="Profiles" class="w-full h-full object-cover">
+                    <div class="icon-box">
+                       <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor">
+                            <circle cx="12" cy="7" r="4"/>
+                            <path d="M4 21v-2a4 4 0 014-4h8a4 4 0 014 4v2"/>
+                        </svg>
                     </div>
                     <span class="icon-label">Profiles</span>
                 </a>
-                 <!-- Domains -->
+
+                 <!-- 10. Domains -->
                  <a href="#" class="flex flex-col items-center">
-                    <div class="icon-box !p-0 overflow-hidden">
-                        <img src="URL_TO_YOUR_DOMAINS_ICON.png" alt="Domains" class="w-full h-full object-cover">
+                    <div class="icon-box">
+                        <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor">
+                            <rect x="3" y="4" width="18" height="16" rx="2"/>
+                            <path d="M12 4v16M3 12h18"/>
+                        </svg>
                     </div>
                     <span class="icon-label">Domains</span>
                 </a>
-                 <!-- App Studio -->
+
+                 <!-- 11. App Studio -->
                  <a href="#" class="flex flex-col items-center">
-                    <div class="icon-box !p-0 overflow-hidden">
-                        <img src="URL_TO_YOUR_APPSTUDIO_ICON.png" alt="App Studio" class="w-full h-full object-cover">
+                    <div class="icon-box">
+                        <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor">
+                            <rect x="3" y="3" width="18" height="18" rx="2"/>
+                            <path d="M12 8v8M8 12h8"/>
+                            <path d="M6 6l3 3M18 6l-3 3M6 18l3-3M18 18l-3-3"/>
+                        </svg>
                     </div>
                     <span class="icon-label">App Studio</span>
                 </a>
-                 <!-- Dollar Exchange -->
+                 
+                 <!-- 12. Dollar Exchange (Link preserved) -->
                  <a href="request.html" class="flex flex-col items-center">
-                    <div class="icon-box !p-0 overflow-hidden">
-                         <img src="URL_TO_YOUR_EXCHANGE_ICON.png" alt="Dollar Exchange" class="w-full h-full object-cover">
+                    <div class="icon-box">
+                         <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 8l4 4-4 4M12 8V16"/>
+                         </svg>
                     </div>
                     <span class="icon-label">Dollar Exchange</span>
                  </a>
-                 <!-- Locked App -->
+
+                 <!-- 13. Locked App (Link preserved) -->
                  <a href="#" class="flex flex-col items-center">
-                    <div class="icon-box !p-0 overflow-hidden">
-                        <img src="URL_TO_YOUR_LOCKEDAPP_ICON.png" alt="Locked App" class="w-full h-full object-cover">
+                    <div class="icon-box">
+                        <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor">
+                            <rect x="3" y="11" width="18" height="10" rx="2"/>
+                            <path d="M7 11V7a5 5 0 0110 0v4"/>
+                        </svg>
                     </div>
                     <span class="icon-label">Locked App</span>
                 </a>
-                 <!-- Payment Request -->
+
+                 <!-- 14. Payment Request (Link preserved) -->
                  <a href="request.html" class="flex flex-col items-center">
-                    <div class="icon-box !p-0 overflow-hidden">
-                        <img src="URL_TO_YOUR_PAYMENTREQ_ICON.png" alt="Payment Request" class="w-full h-full object-cover">
+                    <div class="icon-box">
+                        <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor">
+                            <path d="M15 10l4.5-4.5M15 10l-4.5 4.5M15 15l-4.5 4.5"/>
+                            <circle cx="12" cy="12" r="10"/>
+                        </svg>
                     </div>
                     <span class="icon-label">Payment Req</span>
                  </a>
-                 <!-- Empty Grid Item (if needed for alignment) -->
-                 <!-- <div class="flex flex-col items-center"></div> -->
             </div>
         </section>
 
-
-    </div><!-- End Main Content -->
-
-    <!-- Bottom Navigation Bar -->
-    <nav class="fixed bottom-0 left-0 right-0 bottom-nav shadow-inner z-10">
-        <div class="max-w-5xl mx-auto flex justify-around items-center h-16 px-4">
-            <a href="#" class="flex flex-col items-center text-pi-yellow"> <!-- Active Home -->
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-                <span class="text-xs font-medium">Home</span>
+        <!-- --- Explore Third-Party Apps Section --- -->
+        <section class="px-4 py-8 max-w-5xl mx-auto">
+            <h3 class="text-xl font-semibold text-gray-800 mb-5 text-center">Explore Third-Party Apps</h3>
+            
+            <!-- Pi Network (Top Staked App) Card -->
+            <a href="#" class="block mb-6 relative bg-white h-48 rounded-xl shadow-lg overflow-hidden border border-gray-200 cursor-pointer app-listing">
+                <!-- Majestic Earth background -->
+                <div class="h-full bg-cover bg-center majestic-earth-card" style="background-image: url('https://i.imgur.com/G3t6YhQ.jpeg');"></div>
+                
+                <!-- Overlay content -->
+                <div class="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-end p-4">
+                    <div class="text-xs font-semibold text-white mb-2 py-1 px-2 rounded-full w-fit bg-yellow-500/80">Top Staked App Studio App</div>
+                    <div class="flex items-center">
+                        <!-- Inner Pi Icon -->
+                        <div class="token-icon mr-2" style="background-color: transparent;">
+                             <svg class="token-icon-pi-svg" style="color: white; fill: currentColor;">
+                                <use xlink:href="#pi-symbol"></use>
+                            </svg>
+                        </div>
+                        <span class="text-white text-xl font-bold">Pi Network</span>
+                    </div>
+                </div>
             </a>
-            <a href="#" class="flex flex-col items-center text-gray-500 hover:text-pi-purple">
+
+            <!-- OKX Listing (Simulated App) -->
+            <div class="flex items-center p-3 mb-4 bg-white rounded-xl shadow-sm app-listing cursor-pointer">
+                <span class="text-gray-500 font-medium mr-3">1</span>
+                <!-- Custom OKX-like Icon (Checkered Flag) -->
+                <div class="token-icon mr-3 bg-white border border-gray-400">
+                    <svg style="width: 24px; height: 24px;" viewBox="0 0 24 24" stroke="currentColor" fill="none">
+                        <rect x="3" y="3" width="6" height="6" fill="black"/>
+                        <rect x="9" y="3" width="6" height="6"/>
+                        <rect x="15" y="3" width="6" height="6" fill="black"/>
+                        <rect x="3" y="9" width="6" height="6"/>
+                        <rect x="9" y="9" width="6" height="6" fill="black"/>
+                        <rect x="15" y="9" width="6" height="6"/>
+                        <rect x="3" y="15" width="6" height="6" fill="black"/>
+                        <rect x="9" y="15" width="6" height="6"/>
+                        <rect x="15" y="15" width="6" height="6" fill="black"/>
+                    </svg>
+                </div>
+                <div class="flex-grow">
+                    <p class="font-semibold text-gray-800">OKX</p>
+                </div>
+                <div class="text-right">
+                    <p class="pi-balance">617.54K Pi</p>
+                </div>
+            </div>
+
+            <!-- Gcvgpt Listing (Simulated App) -->
+            <div class="flex items-center p-3 mb-4 bg-white rounded-xl shadow-sm app-listing cursor-pointer">
+                <span class="text-gray-500 font-medium mr-3">2</span>
+                <!-- Custom GcvGPT-like Icon (Pi + Chatbot) -->
+                <div class="token-icon mr-3" style="background: #7E57C2;">
+                    <svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="currentColor" color="white">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" fill="currentColor"/>
+                        <path d="M14 12h-4c-1.1 0-2-.9-2-2V7c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v3c0 1.1-.9 2-2 2z" fill="#F5C65A"/>
+                    </svg>
+                </div>
+                <div class="flex-grow">
+                    <p class="font-semibold text-gray-800">Gcvgpt</p>
+                    <p class="text-xs text-gray-500 truncate">The chatbot, named GcvGPT, is ...</p>
+                </div>
+                <div class="text-right">
+                    <p class="pi-balance">396.45K Pi</p>
+                </div>
+            </div>
+
+            <p class="text-center text-xs text-gray-400 mt-6 mb-8">
+                This data is updated every 15 minutes<br>
+                Last refreshed at: Oct 23 12:18 PM
+            </p>
+            
+            <p class="text-center text-pi-purple font-medium text-lg mt-4 mb-8 cursor-pointer">
+                Explore More
+            </p>
+
+        </section>
+        
+        <!-- --- Bookmarked Apps Section --- -->
+        <section class="px-4 py-4 max-w-5xl mx-auto">
+             <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center">Bookmarked Apps</h3>
+             
+             <div class="p-6 bg-white rounded-xl border border-gray-200 shadow-sm text-center">
+                 <p class="text-gray-600">You have not bookmarked any apps, explore the ecosystem and bookmark your favorite apps in their app details page.</p>
+             </div>
+             
+             <p class="flex flex-col items-center text-gray-500 hover:text-pi-purple">
                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
                 <span class="text-xs font-medium">Pi Apps</span>
             </a>
+            <!-- Services -->
             <a href="#" class="flex flex-col items-center text-gray-500 hover:text-pi-purple">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 16v-2m8-8h-2M4 12H2m18 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                 <span class="text-xs font-medium">Services</span>
@@ -294,5 +445,3 @@
 
 </body>
 </html>
-
-
