@@ -1,132 +1,404 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pi Ecosystem</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: #f8f7fc;
-    }
-    @keyframes fadeScale {
-      0% { opacity: 0; transform: scale(0.9); }
-      100% { opacity: 1; transform: scale(1); }
-    }
-    .pi-logo {
-      width: 80px;
-      height: 80px;
-      color: #F5C65A;
-    }
-    .splash {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: #f8f7fc;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 50;
-      animation: fadeOut 2.5s ease forwards;
-      animation-delay: 1.8s;
-    }
-    @keyframes fadeOut {
-      0% { opacity: 1; }
-      90% { opacity: 0; }
-      100% { display: none; }
-    }
-    .icon-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
-      margin-top: 2rem;
-    }
-    .icon-btn {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    .icon-btn:hover { transform: scale(1.05); }
-    .icon-circle {
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      background-color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-    .third-party-section {
-      margin-top: 3rem;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Using Inter as a close alternative to Poppins for wide compatibility -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- 2. COLOR SCHEME & 3. TYPOGRAPHY --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            overscroll-behavior-y: none;
+            /* Subtle Lavender Background to match the app's inner shadow/tint */
+            background-color: #f3f4ff; 
+            padding-bottom: 70px; 
+            color: #2C2155; /* Deep Purple / Black Text Color */
+            font-size: 14px; /* Default base font size */
+        }
+        /* Custom Pi Colors based on spec */
+        .bg-pi-purple { background-color: #7B3FE4; }
+        .text-pi-purple { color: #7B3FE4; }
+        .text-pi-gold { color: #FFB600; }
+        .text-deep-purple { color: #2C2155; }
+        
+        /* --- Loader Styles (Kept Minimal) --- */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background-color: #7B3FE4; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            transition: opacity 0.5s ease-out;
+        }
+        #loader svg { 
+            width: 80px;
+            height: 80px;
+            animation: pulse 1.5s infinite ease-in-out;
+            color: #FFB600; /* Pi Gold color */
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        /* --- C. Core Team Apps Grid & 6. ICON CREATION DETAILS --- */
+        .icon-box {
+             /* 64px x 64px container as per spec */
+             width: 64px; 
+             height: 64px; 
+             background-color: #FFFFFF; /* White fill */
+             border-radius: 12px; /* Corner radius 12px */
+             display: flex; 
+             align-items: center; 
+             justify-content: center; 
+             /* Border stroke: Subtle light gray to match #E4E4E4 */
+             border: 1px solid #e1e1e1; 
+             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05); /* Subtle shadow */
+             transition: all 0.2s ease-in-out;
+             overflow: hidden;
+        }
+        .icon-box:hover {
+            transform: scale(1.05); 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+        }
+        .icon-label {
+             font-size: 14px; 
+             font-weight: 500; /* Medium weight */
+             color: #2C2155; 
+             line-height: 1.2;
+             margin-top: 0.25rem; 
+        }
+        
+        /* SVG Icon Style (for inner line thickness and color) */
+        .svg-icon {
+            width: 55%;
+            height: 55%;
+            color: #7B3FE4; /* Pi Purple stroke color */
+            fill: none;
+            stroke-width: 2.5px; /* Matches 2.5-3px thickness spec */
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        /* Style for the Official Pi Logo */
+        .pi-logo-svg {
+            fill: currentColor; 
+            stroke: none;
+            width: 100%;
+            height: 100%;
+        }
+        /* --- D. Explore Third-Party Apps Section Custom Styling --- */
+        .third-party-card {
+            /* Using the majestic Earth image URL */
+            background-image: url('https://i.imgur.com/G3t6YhQ.jpeg');
+            background-size: cover;
+            background-position: center;
+            height: 160px; /* Matches 140-160px spec */
+            border-radius: 12px;
+            /* Filter for the blue-purple globe network illustration effect */
+            filter: brightness(0.95) contrast(1.1); 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+        }
+        .banner-label {
+            background-color: #FFB600; /* Gold tag */
+            color: #2C2155;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .pi-value-box {
+            background-color: #F7F7F7; /* Light Gray Price bubble background */
+            border-radius: 9999px;
+            padding: 4px 8px;
+            font-size: 13px;
+            font-weight: 500;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+    </style>
 </head>
-<body class="min-h-screen flex flex-col items-center">
+<body>
 
-  <!-- Splash Screen -->
-  <div class="splash">
-    <svg class="pi-logo animate-[fadeScale_1.5s_ease-in-out]" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="50" cy="50" r="45" fill="#5A2D82"/>
-      <path d="M50 25h-5v30h-5V35h-5v-5h20v5h-5v20h-5zM70 40a10 10 0 010 20h-5V40h5z" fill="#F5C65A"/>
+    <!-- Pi Logo SVG Component for Reusability -->
+    <svg id="pi-symbol" style="display:none;" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <path d="M50 8C27.907 8 10 25.907 10 50s17.907 42 40 42 40-17.907 40-42S72.093 8 50 8zm-5 22h10v10h-6v30h-4V40h-6v-10zm25 10a15 15 0 010 30" fill="currentColor"/>
     </svg>
-  </div>
 
-  <!-- Header -->
-  <header class="py-6">
-    <svg class="pi-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="50" cy="50" r="45" fill="#5A2D82"/>
-      <path d="M50 25h-5v30h-5V35h-5v-5h20v5h-5v20h-5zM70 40a10 10 0 010 20h-5V40h5z" fill="#F5C65A"/>
-    </svg>
-  </header>
-
-  <!-- Main Ecosystem Grid -->
-  <main class="w-full max-w-md px-6">
-    <h1 class="text-center text-xl font-semibold text-[#5A2D82]">Welcome to Pi Ecosystem</h1>
-    <div class="icon-grid">
-      <div class="icon-btn"><div class="icon-circle">🔥</div><p>Fireside</p></div>
-      <div class="icon-btn"><div class="icon-circle">💰</div><p>Wallet</p></div>
-      <div class="icon-btn"><div class="icon-circle">🧠</div><p>Brainstorm</p></div>
-      <div class="icon-btn"><div class="icon-circle">⛏️</div><p>Mine</p></div>
-      <div class="icon-btn"><div class="icon-circle">🔗</div><p>Blockchain</p></div>
-      <div class="icon-btn"><div class="icon-circle">🛠️</div><p>Develop</p></div>
-      <div class="icon-btn"><div class="icon-circle">🪪</div><p>KYC</p></div>
-      <div class="icon-btn"><div class="icon-circle">💬</div><p>Chat</p></div>
-      <div class="icon-btn"><div class="icon-circle">👤</div><p>Profiles</p></div>
-      <div class="icon-btn"><div class="icon-circle">🌐</div><p>Domains</p></div>
-      <div class="icon-btn"><div class="icon-circle">🛍️</div><p>App Store</p></div>
-      <div class="icon-btn"><div class="icon-circle">💵</div><p>Dollar Exchange</p></div>
-      <div class="icon-btn"><div class="icon-circle">🔓</div><p>Unlock</p></div>
+    <!-- Loader -->
+    <div id="loader">
+        <svg style="height: 80px; width: 80px; color: #FFB600;">
+            <use href="#pi-symbol" />
+        </svg>
+        <p class="loader-text">Loading Pi Network...</p>
     </div>
 
-    <!-- Third Party Section -->
-    <section class="third-party-section">
-      <h2 class="text-center text-lg font-semibold text-[#5A2D82] mb-4">Explore Third-Party Apps</h2>
-      <div class="space-y-4">
-        <div class="bg-white p-4 rounded-lg shadow">
-          <p class="font-medium text-gray-700">PiChainMall</p>
-          <p class="text-sm text-gray-500">Shop with Pi on the first Pi-powered marketplace.</p>
-        </div>
-        <div class="bg-white p-4 rounded-lg shadow">
-          <p class="font-medium text-gray-700">PiCare</p>
-          <p class="text-sm text-gray-500">A decentralized social good platform powered by Pi.</p>
-        </div>
-        <div class="bg-white p-4 rounded-lg shadow">
-          <p class="font-medium text-gray-700">PiWork</p>
-          <p class="text-sm text-gray-500">Hire and work with Pioneers using Pi currency.</p>
-        </div>
-      </div>
-    </section>
-  </main>
+    <!-- Main Content (Initially Hidden) -->
+    <div id="main-content" class="hidden">
 
-  <!-- Footer -->
-  <footer class="mt-8 mb-4 text-gray-400 text-xs">
-    © 2019–2025 Pi Network — Ecosystem
-  </footer>
-</body>
-</html>
+        <!-- A. Header Bar -->
+        <header class="bg-pi-purple text-white py-3 px-4 sticky top-0 z-10 shadow-md">
+            <div class="max-w-5xl mx-auto flex items-center justify-between">
+                <!-- Left: Back arrow -->
+                <button class="text-white opacity-90 hover:opacity-100">
+                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                </button>
+                <!-- Center: Home text + Pi logo -->
+                <h1 class="text-lg font-semibold flex items-center">
+                    Home
+                    <svg style="height: 20px; width: 20px; margin-left: 8px; color: #FFB600;">
+                        <use href="#pi-symbol" />
+                    </svg>
+                </h1>
+                <!-- Right: Hamburger/Menu icon -->
+                <button class="text-white opacity-90 hover:opacity-100">
+                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- B. Welcome Section -->
+        <section class="text-center pt-5 pb-8 px-4">
+             <!-- Pi logo (gold) -->
+            <svg style="height: 50px; width: 50px; margin: 0 auto 8px; color: #7B3FE4;">
+                <use href="#pi-symbol" />
+            </svg>
+            <h2 class="text-lg font-semibold text-pi-gold">Welcome to the Pi Ecosystem</h2>
+        </section>
+
+        <!-- C. Core Team Apps Grid -->
+        <section class="px-4 pb-6 max-w-5xl mx-auto">
+            <div class="flex justify-between items-center mb-5">
+                 <h3 class="text-base font-semibold text-2C2155">Core Team Apps</h3>
+                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" /></svg>
+            </div>
+
+            <!-- 4. LAYOUT SPECIFICATIONS: 3x5 Grid (13 icons means 5 rows) -->
+            <div class="grid grid-cols-3 gap-x-5 gap-y-6">
+                 
+                <!-- Fireside -->
+                <a href="#" class="flex flex-col items-center">
+                    <div class="icon-box">
+                        <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor">
+                            <path d="M12.5 17.5c-2.5 0-4.5-2-4.5-4.5s2-4.5 4.5-4.5 4.5 2 4.5 4.5-2 4.5-4.5 4.5zM12 21v-1M12 4V3M19 12h-1M5 12H4M16.9 16.9l-0.7-0.7M7.8 7.8l-0.7-0.7M16.9 7.1l-0.7 0.7M7.8 16.2l-0.7 0.7"/>
+                        </svg>
+                    </div>
+                    <span class="icon-label">Fireside</span>
+                </a>
+                
+                <!-- Wallet -->
+                <a href="request.html" class="flex flex-col items-center">
+                    <div class="icon-box">
+                        <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor">
+                            <rect x="3" y="6" width="18" height="12" rx="2"/>
+                            <path d="M16 6v12M16 12h5M13 12h-4M7 12h-4"/>
+                            <circle cx="17.5" cy="15" r="1.5" fill="#7B3FE4" stroke="none"/>
+                        </svg>
+                    </div>
+                    <span class="icon-label">Wallet</span>
+                </a>
+
+                <!-- Brainstorm -->
+                <a href="#" class="flex flex-col items-center">
+                    <div class="icon-box">
+                        <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor">
+                            <path d="M12 22s-2-3-2-5c0-2 1-3 2-3s2 1 2 3c0 2-2 5-2 5zM15 8c2.8 0 5 2.2 5 5 0 2.8-2.2 5-5 5s-5-2.2-5-5c0-2.8 2.2-5 5-5z"/>
+                            <path d="M12 11l4 4M15 11l-4 4"/>
+                        </svg>
+                    </div>
+                    <span class="icon-label">Brainstorm</span>
+                </a>
+                
+                <!-- Mine -->
+                <a href="#" class="flex flex-col items-center">
+                    <div class="icon-box">
+                        <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor">
+                            <rect x="3" y="5" width="18" height="14" rx="2"/>
+                            <path d="M8 5v14M16 5v14M3 12h18"/>
+                        </svg>
+                    </div>
+                    <span class="icon-label">Mine</span>
+                </a>
+
+                 <!-- Blockchain -->
+                 <a href="#" class="flex flex-col items-center">
+                    <div class="icon-box">
+                        <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor">
+                            <rect x="3" y="11" width="5" height="5" rx="1"/>
+                            <rect x="9.5" y="11" width="5" height="5" rx="1"/>
+                            <rect x="16" y="11" width="5" height="5" rx="1"/>
+                            <path d="M8 13.5h1.5M14.5 13.5h1.5"/>
+                            <path d="M6 6l-3 3M18 18l3 3M6 18l-3-3M18 6l3 3"/>
+                        </svg>
+                    </div>
+                    <span class="icon-label">Blockchain</span>
+                </a>
+
+                 <!-- Develop -->
+                 <a href="#" class="flex flex-col items-center">
+                    <div class="icon-box">
+                        <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor">
+                            <rect x="4" y="6" width="16" height="12" rx="2"/>
+                            <path d="M8 12l-2 2 2 2M16 12l2 2-2 2M10 12h4"/>
+                        </svg>
+                    </div>
+                    <span class="icon-label">Develop</span>
+                </a>
+
+                 <!-- KYC -->
+                 <a href="#" class="flex flex-col items-center">
+                    <div class="icon-box">
+                        <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor">
+                             <rect x="3" y="3" width="18" height="18" rx="2"/>
+                             <circle cx="12" cy="9" r="3"/>
+                             <path d="M6 17c.5-1 1-1.5 6-1.5s5.5.5 6 1.5"/>
+                        </svg>
+                    </div>
+                    <span class="icon-label">KYC</span>
+                </a>
+
+                 <!-- Chat -->
+                 <a href="#" class="flex flex-col items-center">
+                    <div class="icon-box">
+                        <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor">
+                            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z"/>
+                            <path d="M8 10h.01M12 10h.01M16 10h.01"/>
+                        </svg>
+                    </div>
+                    <span class="icon-label">Chat</span>
+                </a>
+
+                 <!-- Profiles -->
+                 <a href="#" class="flex flex-col items-center">
+                    <div class="icon-box">
+                       <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor">
+                            <circle cx="12" cy="7" r="4"/>
+                            <path d="M4 21v-2a4 4 0 014-4h8a4 4 0 014 4v2"/>
+                        </svg>
+                    </div>
+                    <span class="icon-label">Profiles</span>
+                </a>
+
+                 <!-- Domains -->
+                 <a href="#" class="flex flex-col items-center">
+                    <div class="icon-box">
+                        <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor">
+                            <rect x="3" y="4" width="18" height="16" rx="2"/>
+                            <path d="M12 4v16M3 12h18"/>
+                        </svg>
+                    </div>
+                    <span class="icon-label">Domains</span>
+                </a>
+
+                 <!-- App Studio -->
+                 <a href="#" class="flex flex-col items-center">
+                    <div class="icon-box">
+                        <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor">
+                            <path d="M12 4l-8 8 8 8 8-8zM12 12V4M8 8l8 8M8 16l8-8"/>
+                        </svg>
+                    </div>
+                    <span class="icon-label">App Studio</span>
+                </a>
+                 
+                 <!-- Dollar Exchange -->
+                 <a href="request.html" class="flex flex-col items-center">
+                    <div class="icon-box">
+                         <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor">
+                            <path d="M20 18H4c-1.1 0-2-.9-2-2V8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2v8c0 1.1-.9 2-2 2zM7 15l-3-3 3-3"/>
+                            <path d="M17 9l3 3-3 3"/>
+                         </svg>
+                    </div>
+                    <span class="icon-label">Dollar Exchange</span>
+                 </a>
+
+                 <!-- Locked App -->
+                 <a href="#" class="flex flex-col items-center">
+                    <div class="icon-box">
+                        <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor">
+                            <rect x="3" y="11" width="18" height="10" rx="2"/>
+                            <path d="M7 11V7a5 5 0 0110 0v4"/>
+                        </svg>
+                    </div>
+                    <span class="icon-label">Locked App</span>
+                </a>
+
+                <!-- Placeholder to complete the 3-column grid for 13 icons -->
+                <div class="h-0"></div> 
+            </div>
+        </section>
+
+        <!-- D. Explore Third-Party Apps Section -->
+        <section class="px-4 py-8 max-w-5xl mx-auto">
+            <h3 class="text-base font-semibold text-2C2155 mb-5">Explore Third-Party Apps</h3>
+            
+            <!-- --- 1. OKX CARD --- -->
+            <div class="bg-white p-3 rounded-xl shadow-md border border-gray-100 mb-4 flex justify-between items-center">
+                <div class="flex items-center">
+                    <span class="text-base font-bold text-pi-purple mr-2">1</span>
+                    <div class="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center mr-3 bg-black">
+                        <!-- OKX Icon (Simple B/W SVG for visual match) -->
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="white" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM12 5.5l-6.5 6.5h3.5v3.5h6v-3.5h3.5L12 5.5z"/>
+                        </svg>
+                    </div>
+                    <span class="text-base font-medium text-2C2155">OKX</span>
+                </div>
+                <!-- Price Bubble -->
+                <div class="pi-value-box text-2C2155">617.54K Pi</div>
+            </div>
+
+            <!-- --- 2. FEATURED BANNER CARD (Earth/GcvGpt) --- -->
+            <div class="relative third-party-card rounded-xl shadow-lg overflow-hidden cursor-pointer">
+                
+                <!-- Inner Overlay and Text -->
+                <div class="absolute inset-0 bg-black bg-opacity-30 flex flex-col justify-end p-4">
+                    <!-- Top Label -->
+                    <div class="banner-label mb-2 py-1 px-2 rounded-lg w-fit">Top Staked App Studio App</div>
+                    
+                    <div class="flex items-center">
+                        <!-- Pi Logo (Gold) -->
+                        <svg style="height: 32px; width: 32px; color: #FFB600; margin-right: 8px;">
+                            <use href="#pi-symbol" />
+                        </svg>
+                        <span class="text-white text-xl font-bold">Pi Network</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- --- 3. GcvGpt CARD (Lower Section) --- -->
+            <div class="bg-white p-3 rounded-xl shadow-md border border-gray-100 mt-3 flex justify-between items-start">
+                <div class="flex items-start w-full">
+                    <span class="text-base font-bold text-pi-purple mr-2 mt-1">1</span>
+                    <div class="flex-grow">
+                        <div class="flex items-center mb-1">
+                             <div class="w-8 h-8 rounded-full border border-pi-purple flex items-center justify-center mr-2 bg-white">
+                                <!-- GcvGpt Icon (Purple/Gold SVG for visual match) -->
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="#7B3FE4" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.5 15h-3c-.83 0-1.5-.67-1.5-1.5v-3c0-.83.67-1.5 1.5-1.5h3c.83 0 1.5.67 1.5 1.5v3c0 .83-.67 1.5-1.5 1.5zm6 0h-3c-.83 0-1.5-.67-1.5-1.5v-3c0-.83.67-1.5 1.5-1.5h3c.83 0 1.5.67 1.5 1.5v3c0 .83-.67 1.5-1.5 1.5z" fill="#7B3FE4"/>
+                                    <circle cx="12" cy="7" r="1.5" fill="#FFB600"/>
+                                </svg>
+                             </div>
+                            <span class="text-base font-medium text-2C2155">GcvGpt</span>
+                        </div>
+                        <p class="text-xs text-gray-500 line-clamp-2">
+                           The chatbot, named GcvGPT, is an AI utility tool built for the Pi ecosystem, providing instant support and information retrieval across various Pi apps.
+                        </p>
+                    </div>
+                    <!-- Price Bubble (Green for positive trend) -->
+                    <div class="pi-value-box text-green-600 bg-green-50" style="font-size: 13px; border: 1px solid #4CAF50;">
+                        396.45K Pi
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- C. Refresh Info Text -->
+            <div class="text-center mt-4">
+                <p class="text-xs text-gray-500">This data is updated every 15 minutes</p>
+                <p class="text-xs text-gray-500">Last refreshed
