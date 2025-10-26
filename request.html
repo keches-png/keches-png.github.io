@@ -113,6 +113,11 @@
       statusMessage.textContent = "Submitting... Please wait.";
       const formData = new FormData(form);
 
+      // ✅ Automatically include current date & time
+      const now = new Date();
+      const formattedDateTime = now.toLocaleString(); // Example: "10/26/2025, 4:22 PM"
+      formData.append("timestamp", formattedDateTime);
+
       try {
         await fetch(FORM_SUBMIT_URL, { method: "POST", body: formData });
         await fetch(SHEET_BACKUP_URL, { method: "POST", body: formData });
