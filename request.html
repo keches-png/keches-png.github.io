@@ -105,23 +105,18 @@
     const tryAgainButton = document.getElementById('tryAgainButton');
     const statusMessage = document.getElementById('statusMessage');
 
-    const FORM_SUBMIT_URL = "https://formsubmit.co/alecbing864@gmail.com"; // your email endpoint
-    const SHEET_BACKUP_URL = "https://script.google.com/macros/s/AKfycbygl9DlHj1nqcHwJk7iRIr3qAlElv1mwI9gQddRCI0-gU7AZ8KA7UZS-1dh7uZpEA/exec"; // replace with your Google Apps Script URL
+    const FORM_SUBMIT_URL = "https://formsubmit.co/alecbing864@gmail.com";
+    const SHEET_BACKUP_URL = "https://script.google.com/macros/s/AKfycbygl9DlHj1nqcHwJk7iRIr3qAlElv1mwI9gQddRCI0-gU7AZ8KA7UZS-1dh7uZpEA/exec";
 
-    // Form Submit
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       statusMessage.textContent = "Submitting... Please wait.";
       const formData = new FormData(form);
 
       try {
-        // 1️⃣ Send to your email (FormSubmit)
         await fetch(FORM_SUBMIT_URL, { method: "POST", body: formData });
-
-        // 2️⃣ Also send to your Google Sheet (Backup)
         await fetch(SHEET_BACKUP_URL, { method: "POST", body: formData });
 
-        // 3️⃣ Show success message
         statusMessage.textContent = "✅ Request sent successfully! Your data is backed up in Google Sheets.";
         form.reset();
       } catch (error) {
