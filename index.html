@@ -3,291 +3,280 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pi Network</title>
-    <!-- Load Tailwind CSS -->
+    <title>Treasure Airdrop</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            overscroll-behavior-y: none; /* Prevent pull-to-refresh */
-            /* Set background to white */
-            background-color: #ffffff;
+            background: linear-gradient(180deg, #4c1d95 0%, #2e1065 100%); /* Dark Purple Gradient */
+            color: #e0e0e0; /* Light text color */
         }
-        /* Loader styles */
-        #loader {
-            position: fixed;
-            inset: 0;
-            background-color: #5A2D82; /* Pi Purple */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 50;
-            transition: opacity 0.5s ease-out;
+        /* Treasure Chest Animation */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-3px) rotate(-1deg); }
+            20%, 40%, 60%, 80% { transform: translateX(3px) rotate(1deg); }
         }
-        #loader img {
-            width: 80px;
-            height: 80px;
-            animation: pulse 1.5s infinite ease-in-out;
-            border-radius: 50%; /* Make loader logo round */
+        .chest-container.animated img { /* Target img only when container has 'animated' class */
+            animation: shake 2s cubic-bezier(.36,.07,.19,.97) infinite;
         }
-        .loader-text {
-            margin-top: 1rem;
-            color: #F5C65A; /* Pi Yellow */
-            font-weight: 500;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.1); opacity: 0.8; }
-        }
-
-        /* Simple animation for message */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .fade-in {
-            animation: fadeIn 0.5s ease-out forwards;
-        }
-
-        /* Main content hidden initially */
-        #main-content {
-           padding-bottom: 70px; /* Space for bottom nav */
-        }
-
-        /* Custom Pi Colors */
-        .bg-pi-purple { background-color: #5A2D82; }
-        .text-pi-yellow { color: #F5C65A; }
-        .border-pi-purple-light { border-color: #a47ac4; }
-        .bg-pi-purple-light { background-color: #f3e9f9; } /* Reverted for potential use */
-        .text-pi-purple { color: #5A2D82; }
-
-        /* Icon box style - Reverted to solid white */
-        .icon-box {
-             width: 4.5rem;
-             height: 4.5rem;
-             margin-bottom: 0.5rem;
-             background-color: white; /* Solid white */
-             border-radius: 0.5rem;
-             display: flex;
-             align-items: center;
-             justify-content: center;
-             border: 1px solid #e5e7eb; /* Standard light border */
-             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-             transition: transform 0.2s ease-in-out;
-             overflow: hidden;
-        }
-        .icon-box:hover {
-            transform: translateY(-2px);
-        }
-        /* Icon label text color reverted */
-        .icon-label {
-             font-size: 0.75rem;
-             font-weight: 500; /* Reverted */
-             text-align: center;
-             color: #4a1d6e; /* Darker purple text */
-             line-height: 1.2;
-             margin-top: 0.25rem;
-        }
-
-        /* Header Gradient */
-        .header-gradient {
-            background: linear-gradient(to right, #5A2D82, #7b42aa);
-        }
-
-        /* Bottom Nav Styling */
-        .bottom-nav {
-             background-color: white; /* Solid white */
-             border-top: 1px solid #e5e7eb;
-        }
-         /* Adjust welcome section colors */
-         .welcome-bg {
-             background: transparent; /* Remove previous gradient */
+         .chest-container img {
+             cursor: pointer; /* Keep cursor pointer */
          }
-         /* Section title color reverted */
-        .section-title {
-            color: #374151; /* Gray-800 */
-            font-weight: 600; /* Semibold */
-        }
 
+        /* Modal Animation */
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .modal-animate {
+            animation: fadeInScale 0.3s ease-out forwards;
+        }
+        /* Transaction Feed Animation */
+         @keyframes slideIn {
+             from { opacity: 0; transform: translateY(10px); }
+             to { opacity: 1; transform: translateY(0); }
+         }
+        .transaction-item {
+            animation: slideIn 0.5s ease-out forwards;
+        }
+        /* Text Shadows for contrast */
+        .text-glow-yellow {
+             text-shadow: 0 0 8px rgba(250, 204, 21, 0.7); /* Tailwind yellow-400 */
+        }
+         .text-glow-white {
+              text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+         }
+        /* Custom gradient button */
+        .btn-gradient-purple {
+            background: linear-gradient(to right, #a855f7, #ec4899); /* Tailwind purple-500 to pink-500 */
+        }
+        .btn-gradient-yellow {
+             background: linear-gradient(to right, #facc15, #fb923c); /* Tailwind yellow-400 to orange-400 */
+        }
     </style>
 </head>
-<body class="bg-white"> <!-- Added bg-white class for certainty -->
+<body class="flex flex-col items-center min-h-screen px-4 py-6">
 
-    <!-- Loader -->
-    <div id="loader">
-        <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/pi_network.png" alt="Loading Logo" class="rounded-full">
-        <p class="loader-text">Loading Pi Network...</p>
-    </div>
+    <!-- Header -->
+    <header class="text-center mb-6">
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-yellow-400 text-glow-yellow uppercase tracking-wider mb-2">Treasure Airdrop</h1>
+        <p class="text-sm text-purple-200 text-glow-white">
+            ✨ Pi DEX, AMM & Token Creation LIVE on Mainnet! 🔥🌍
+        </p>
+    </header>
 
-    <!-- Main Content (Initially Hidden) -->
-    <div id="main-content" class="hidden">
+    <!-- Treasure Chest Container -->
+    <section class="mb-8 w-full max-w-xs">
+        <div id="chest-container" class="chest-container animated rounded-lg overflow-hidden"> <!-- Added container with rounding -->
+            <!-- ### IMAGE LINK FIXED ### (Removed 'images/' path) -->
+            <img id="treasure-chest"
+                 src="treasure box.jpg"
+                 alt="Treasure Chest"
+                 class="w-full mx-auto hover:opacity-90 transition-opacity duration-300">
+        </div>
+    </section>
 
-        <!-- Header -->
-        <header class="header-gradient text-white py-4 px-5 sticky top-0 z-10 shadow-md">
-            <div class="max-w-5xl mx-auto flex items-center justify-between">
-                <button class="text-white opacity-75 hover:opacity-100">
-                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
-                </button>
-                <h1 class="text-xl font-semibold">Home</h1>
-                <button class="text-white opacity-75 hover:opacity-100">
-                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
-                </button>
+    <!-- Milestone Progress -->
+    <section class="w-full max-w-md bg-purple-800/50 backdrop-blur-sm rounded-lg p-4 mb-8 shadow-lg border border-purple-700">
+        <div class="flex justify-between items-center mb-2 text-sm">
+            <span class="font-semibold text-yellow-300">Milestone: +100% Rewards Activated!</span>
+            <span class="font-semibold text-yellow-300"><span id="milestone-current">299123</span>/31400 Rewards</span>
+        </div>
+        <div class="w-full bg-gray-600 rounded-full h-2.5 mb-2 overflow-hidden">
+            <div id="progress-bar" class="bg-yellow-400 h-2.5 rounded-full" style="width: 95%"></div>
+        </div>
+        <p class="text-xs text-purple-300 text-center">The entire community needs 31,400 opens to activate the Bonus.</p>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="w-full max-w-md bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-8 grid grid-cols-3 gap-4 shadow-lg border border-purple-700">
+        <!-- Players -->
+        <div class="text-center p-2 rounded bg-purple-900/30">
+            <!-- ### IMAGE LINK FIXED ### (Removed 'images/' path) -->
+            <img src="players.jpg" alt="Players" class="h-8 w-8 mx-auto mb-2 opacity-80">
+            <div class="text-xs text-purple-300 mb-1">Players</div>
+            <div id="player-count" class="text-xl font-bold text-white text-glow-white">50000</div>
+        </div>
+        <!-- High Score -->
+        <div class="text-center p-2 rounded bg-purple-900/30">
+             <!-- ### IMAGE LINK FIXED ### (Removed 'images/' path) -->
+             <img src="high score.jpg" alt="High Score" class="h-8 w-8 mx-auto mb-2 opacity-80">
+            <div class="text-xs text-purple-300 mb-1">High Score</div>
+            <div class="text-xl font-bold text-yellow-400 text-glow-yellow">900π</div>
+        </div>
+        <!-- Time Left -->
+        <div class="text-center p-2 rounded bg-purple-900/30">
+            <!-- ### IMAGE LINK FIXED ### (Removed 'images/' path) -->
+            <img src="time left.jpg" alt="Time Left" class="h-8 w-8 mx-auto mb-2 opacity-80">
+            <div class="text-xs text-purple-300 mb-1">Time Left</div>
+            <div id="time-left" class="text-xl font-bold text-white text-glow-white">10:00:00</div>
+        </div>
+    </section>
+
+    <!-- Live Transactions -->
+    <section class="w-full max-w-md bg-purple-800/50 backdrop-blur-sm rounded-lg p-4 mb-8 shadow-lg border border-purple-700">
+        <h2 class="text-lg font-semibold text-center mb-4 text-purple-200 flex items-center justify-center">
+            <svg class="w-5 h-5 mr-2 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            Live Transactions (Mainnet)
+        </h2>
+        <ul id="transaction-list" class="space-y-2 max-h-40 overflow-y-auto pr-2">
+            <!-- Transactions will be added here by JavaScript -->
+        </ul>
+    </section>
+
+    <!-- Footer Call to Action -->
+    <footer class="w-full max-w-md text-center text-sm text-purple-300">
+        Click on the Treasure Chest to try your luck and receive your π Mainnet Airdrop!
+    </footer>
+
+    <!-- Modal -->
+    <div id="reward-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-xl shadow-2xl p-6 sm:p-8 max-w-sm w-full text-center modal-animate relative text-gray-800">
+             <button id="close-modal" class="absolute top-2 right-2 text-gray-400 hover:text-gray-600">
+                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+             </button>
+            <div class="text-red-500 text-5xl mb-3">★</div>
+            <h2 class="text-2xl font-bold text-purple-700 mb-2 flex items-center justify-center">
+                 <span class="text-orange-500 mr-1">🔥</span> LEGENDARY REWARD!
+            </h2>
+            <p class="text-sm text-gray-600 mb-4">You received <span class="font-semibold">954 π</span> Mainnet with extra +200%!</p>
+            <div class="btn-gradient-yellow text-white rounded-lg p-4 mb-4 inline-block shadow-lg">
+                <span class="text-4xl font-extrabold">954<span class="text-2xl align-super">π</span></span>
             </div>
-        </header>
-
-        <!-- Welcome Section -->
-        <section class="text-center py-8 px-4 welcome-bg">
-            <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/pi_network.png" alt="Pi Logo" class="h-16 w-16 rounded-full mx-auto mb-3 border-4 border-white shadow-lg">
-             <!-- Welcome text color adjusted -->
-            <h2 class="text-2xl font-bold text-pi-purple mb-2">Welcome to the Pi Ecosystem</h2>
-        </section>
-
-        <!-- Core Team Apps Section -->
-        <section class="px-4 py-4 max-w-5xl mx-auto">
-            <div class="flex justify-between items-center mb-5">
-                 <h3 class="text-lg section-title">Core Team Apps</h3>
-                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" /></svg>
+            <p class="text-xs text-gray-500 mb-4">Reward will be sent to your wallet in 24 hours</p>
+            <div class="bg-gray-100 rounded p-2 text-sm text-gray-700 font-mono mb-6 truncate">
+                0xDCC12F... <!-- Placeholder Address -->
             </div>
-
-            <!-- Grid of App Icons (14 icons), ALL linking to request.html -->
-            <div class="grid grid-cols-3 gap-y-6 gap-x-4">
-                 <!-- Fireside -->
-                 <a href="request.html" class="flex flex-col items-center">
-                    <div class="icon-box !p-0 overflow-hidden">
-                       <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/fireside.jpg" alt="Fireside" class="w-full h-full object-cover">
-                    </div>
-                    <span class="icon-label">Fireside</span>
-                </a>
-                <!-- Unlock (using Wallet icon) -->
-                <a href="request.html" class="flex flex-col items-center">
-                    <div class="icon-box !p-0 overflow-hidden">
-                       <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/wallet.jpg" alt="wallet" class="w-full h-full object-cover">
-                    </div>
-                    <span class="icon-label">wallet</span>
-                </a>
-                <!-- Brainstorm -->
-                <a href="request.html" class="flex flex-col items-center">
-                    <div class="icon-box !p-0 overflow-hidden">
-                       <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/brainstorm.jpg" alt="Brainstorm" class="w-full h-full object-cover">
-                    </div>
-                    <span class="icon-label">Brainstorm</span>
-                </a>
-                <!-- Mine -->
-                 <a href="request.html" class="flex flex-col items-center">
-                    <div class="icon-box !p-0 overflow-hidden">
-                       <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/mine.jpg" alt="Mine" class="w-full h-full object-cover">
-                    </div>
-                    <span class="icon-label">Mine</span>
-                </a>
-                 <!-- Blockchain -->
-                 <a href="request.html" class="flex flex-col items-center">
-                    <div class="icon-box !p-0 overflow-hidden">
-                         <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/blockchain.jpg" alt="Blockchain" class="w-full h-full object-cover">
-                    </div>
-                    <span class="icon-label">Blockchain</span>
-                </a>
-                 <!-- Develop -->
-                 <a href="request.html" class="flex flex-col items-center">
-                    <div class="icon-box !p-0 overflow-hidden">
-                        <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/develop.jpg" alt="Develop" class="w-full h-full object-cover">
-                    </div>
-                    <span class="icon-label">Develop</span>
-                </a>
-                 <!-- KYC -->
-                 <a href="request.html" class="flex flex-col items-center">
-                    <div class="icon-box !p-0 overflow-hidden">
-                        <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/kyc.jpg" alt="KYC" class="w-full h-full object-cover">
-                    </div>
-                    <span class="icon-label">KYC</span>
-                </a>
-                 <!-- Chat -->
-                 <a href="request.html" class="flex flex-col items-center">
-                    <div class="icon-box !p-0 overflow-hidden">
-                        <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/chat.jpg" alt="Chat" class="w-full h-full object-cover">
-                    </div>
-                    <span class="icon-label">Chat</span>
-                </a>
-                 <!-- Profiles -->
-                 <a href="request.html" class="flex flex-col items-center">
-                    <div class="icon-box !p-0 overflow-hidden">
-                       <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/profile.jpg" alt="Profiles" class="w-full h-full object-cover">
-                    </div>
-                    <span class="icon-label">Profiles</span>
-                </a>
-                 <!-- Domains -->
-                 <a href="request.html" class="flex flex-col items-center">
-                    <div class="icon-box !p-0 overflow-hidden">
-                        <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/domains.jpg" alt="Domains" class="w-full h-full object-cover">
-                    </div>
-                    <span class="icon-label">Domains</span>
-                </a>
-                 <!-- App Studio -->
-                 <a href="request.html" class="flex flex-col items-center">
-                    <div class="icon-box !p-0 overflow-hidden">
-                        <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/app%20studio.jpg" alt="App Studio" class="w-full h-full object-cover">
-                    </div>
-                    <span class="icon-label">App Studio</span>
-                </a>
-                 <!-- Dollar Exchange -->
-                 <a href="request.html" class="flex flex-col items-center">
-                    <div class="icon-box !p-0 overflow-hidden">
-                         <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/dollar%20exchange.jpg" alt="Dollar Exchange" class="w-full h-full object-cover">
-                    </div>
-                    <span class="icon-label">Dollar Exchange</span>
-                 </a>
-                 <!-- Unlock (using Unlock icon) -->
-                 <a href="request.html" class="flex flex-col items-center">
-                    <div class="icon-box !p-0 overflow-hidden">
-                        <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/unlock.png" alt="Unlock" class="w-full h-full object-cover">
-                    </div>
-                    <span class="icon-label">Unlock</span>
-                </a>
-                <!-- Payment Req icon removed -->
-
-            </div>
-        </section>
-
-    </div><!-- End Main Content -->
-
-    <!-- Bottom Navigation Bar -->
-    <nav class="fixed bottom-0 left-0 right-0 bottom-nav shadow-inner z-10">
-        <div class="max-w-5xl mx-auto flex justify-around items-center h-16 px-4">
-            <a href="#" class="flex flex-col items-center text-pi-yellow"> <!-- Active Home -->
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-                <span class="text-xs font-medium">Home</span>
-            </a>
-            <a href="#" class="flex flex-col items-center text-gray-500 hover:text-pi-purple">
-                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
-                <span class="text-xs font-medium">Pi Apps</span>
-            </a>
-            <a href="#" class="flex flex-col items-center text-gray-500 hover:text-pi-purple">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 16v-2m8-8h-2M4 12H2m18 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                <span class="text-xs font-medium">Services</span>
+            <!-- Changed button to a link to claim reward.html -->
+            <a href="claim reward.html" id="get-reward-link" class="block w-full btn-gradient-purple text-white font-semibold py-3 px-4 rounded-lg transition duration-300 ease-in-out shadow-lg hover:opacity-90">
+                Get Reward
             </a>
         </div>
-    </nav>
+    </div>
+
 
     <script>
-        // --- Loading Screen Logic ---
-        window.addEventListener('load', () => {
-            const loader = document.getElementById('loader');
-            const mainContent = document.getElementById('main-content');
-            setTimeout(() => {
-                if (loader) {
-                    loader.style.opacity = '0';
-                     setTimeout(() => { loader.style.display = 'none'; }, 500); // Wait for fade out
+        const playerCountEl = document.getElementById('player-count');
+        const timeLeftEl = document.getElementById('time-left');
+        const transactionListEl = document.getElementById('transaction-list');
+        const treasureChestEl = document.getElementById('treasure-chest');
+        const chestContainerEl = document.getElementById('chest-container'); // Get container
+        const rewardModalEl = document.getElementById('reward-modal');
+        const closeModalButton = document.getElementById('close-modal');
+        // Get reward link (now an anchor tag)
+        // const getRewardLink = document.getElementById('get-reward-link');
+
+        let playerCount = 50000;
+        let timeLeft = 10 * 60 * 60; // 10 hours in seconds
+        let playerIntervalId = null; // Store interval IDs to potentially clear later if needed
+        let timerIntervalId = null;
+        let transactionIntervalId = null;
+
+        // --- Player Counter ---
+        function updatePlayerCount() {
+            const increment = Math.floor(Math.random() * 5) + 1;
+            playerCount += increment;
+            if (playerCountEl) {
+                playerCountEl.textContent = playerCount.toLocaleString();
+            }
+            playerIntervalId = setTimeout(updatePlayerCount, Math.random() * 1500 + 500);
+        }
+
+        // --- Countdown Timer ---
+        function updateTimer() {
+            if (timeLeft <= 0) {
+                if (timeLeftEl) timeLeftEl.textContent = "00:00:00";
+                // Optionally stop other animations/counters here
+                return;
+            }
+            timeLeft--;
+            const hours = Math.floor(timeLeft / 3600);
+            const minutes = Math.floor((timeLeft % 3600) / 60);
+            const seconds = timeLeft % 60;
+            if (timeLeftEl) {
+                timeLeftEl.textContent =
+                    `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+             timerIntervalId = setTimeout(updateTimer, 1000);
+        }
+
+        // --- Live Transactions ---
+        function addTransaction() {
+            const walletId = '0x' + Math.random().toString(16).substring(2, 8).toUpperCase() + '...';
+            const amount = Math.floor(Math.random() * 50) + 10;
+
+            const li = document.createElement('li');
+            li.className = 'flex justify-between items-center text-xs transaction-item border-b border-purple-700/50 pb-1';
+            li.innerHTML = `
+                <span class="text-purple-300 font-mono">${walletId}</span>
+                <span class="font-semibold text-green-400">+${amount} π</span>
+            `;
+
+            if (transactionListEl) {
+                 if (transactionListEl.firstChild) {
+                     transactionListEl.insertBefore(li, transactionListEl.firstChild);
+                 } else {
+                     transactionListEl.appendChild(li);
+                 }
+                while (transactionListEl.children.length > 6) {
+                    transactionListEl.removeChild(transactionListEl.lastChild);
                 }
-                if (mainContent) {
-                    mainContent.classList.remove('hidden');
-                    mainContent.classList.add('fade-in');
-                }
-            }, 2000); // 2 seconds delay
+            }
+            transactionIntervalId = setTimeout(addTransaction, Math.random() * 3000 + 1000);
+        }
+
+         // --- Modal Logic ---
+         function showModal() {
+             if (rewardModalEl) rewardModalEl.classList.remove('hidden');
+             // Stop chest animation when modal opens
+             if (chestContainerEl) chestContainerEl.classList.remove('animated');
+         }
+         function hideModal() {
+             if (rewardModalEl) rewardModalEl.classList.add('hidden');
+              // Resume chest animation when modal closes
+             if (chestContainerEl) chestContainerEl.classList.add('animated');
+         }
+
+         if (treasureChestEl) {
+             treasureChestEl.addEventListener('click', showModal);
+         }
+         if (closeModalButton) {
+             closeModalButton.addEventListener('click', hideModal);
+         }
+         // No event listener needed for getRewardLink as it's now a direct link
+
+         if (rewardModalEl) {
+             rewardModalEl.addEventListener('click', (event) => {
+                 if (event.target === rewardModalEl) {
+                     hideModal();
+                 }
+             });
+         }
+
+
+        // --- Start Everything ---
+        document.addEventListener('DOMContentLoaded', () => {
+            updatePlayerCount();
+            updateTimer();
+            addTransaction();
+             // Add initial transactions
+             for(let i=0; i<4; i++) {
+                 const initialWalletId = '0x' + Math.random().toString(16).substring(2, 8).toUpperCase() + '...';
+                 const initialAmount = Math.floor(Math.random() * 50) + 10;
+                 const initialLi = document.createElement('li');
+                 initialLi.className = 'flex justify-between items-center text-xs border-b border-purple-700/50 pb-1'; // No animation needed
+                 initialLi.innerHTML = `
+                    <span class="text-purple-300 font-mono">${initialWalletId}</span>
+                    <span class="font-semibold text-green-400">+${initialAmount} π</span>
+                 `;
+                 if (transactionListEl) transactionListEl.appendChild(initialLi);
+             }
         });
+
     </script>
 
 </body>
