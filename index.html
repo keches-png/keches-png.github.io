@@ -114,6 +114,10 @@
             font-weight: 600; /* Semibold */
         }
 
+/* Hide scrollbar (clean Pi look) */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
     </style>
 </head>
 <body class="bg-white"> <!-- Added bg-white class for certainty -->
@@ -259,6 +263,80 @@
             </div>
         </section>
 
+        <!-- Explore Third-Party Apps -->
+<section class="px-4 py-5 max-w-5xl mx-auto">
+    <h3 class="text-[16px] font-semibold text-gray-800 mb-3">
+        Explore Third-Party Apps
+    </h3>
+
+    <!-- Scroll Container -->
+    <div id="cardScroll" class="flex space-x-4 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide">
+
+        <!-- Card -->
+        <a href="request.html" class="min-w-[260px] snap-start">
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                <div class="relative">
+                    <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/pi_network.png"
+                         class="w-full h-32 object-cover">
+                    <span class="absolute top-2 left-2 bg-yellow-100 text-yellow-700 text-[10px] px-2 py-[2px] rounded-full font-medium">
+                        Top Staked App
+                    </span>
+                </div>
+                <div class="flex items-center justify-between p-3">
+                    <div class="flex items-center space-x-2">
+                        <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/fireside.jpg"
+                             class="w-8 h-8 rounded-full">
+                        <div>
+                            <p class="text-[13px] font-semibold">Fruity Pi</p>
+                            <p class="text-[11px] text-gray-500">Combine fruits</p>
+                        </div>
+                    </div>
+                    <span class="text-[11px] bg-gray-100 px-2 py-1 rounded">10.37M Pi</span>
+                </div>
+            </div>
+        </a>
+
+        <!-- Card -->
+        <a href="request.html" class="min-w-[260px] snap-start">
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                <div class="relative">
+                    <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/pi_network.png"
+                         class="w-full h-32 object-cover">
+                    <span class="absolute top-2 left-2 bg-yellow-100 text-yellow-700 text-[10px] px-2 py-[2px] rounded-full font-medium">
+                        Top Staked Service
+                    </span>
+                </div>
+                <div class="flex items-center justify-between p-3">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 rounded-full bg-black flex items-center justify-center text-white text-[11px] font-semibold">
+                            OKX
+                        </div>
+                        <p class="text-[13px] font-semibold">OKX</p>
+                    </div>
+                    <span class="text-[11px] bg-gray-100 px-2 py-1 rounded">197.22K Pi</span>
+                </div>
+            </div>
+        </a>
+
+        <!-- Card -->
+        <a href="request.html" class="min-w-[260px] snap-start">
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                <div class="relative">
+                    <img src="https://raw.githubusercontent.com/keches-png/keches-png.github.io/refs/heads/main/images/pi_network.png"
+                         class="w-full h-32 object-cover">
+                    <span class="absolute top-2 left-2 bg-yellow-100 text-yellow-700 text-[10px] px-2 py-[2px] rounded-full font-medium">
+                        Top App Studio
+                    </span>
+                </div>
+                <div class="p-3">
+                    <p class="text-[13px] font-semibold">Pi Network</p>
+                </div>
+            </div>
+        </a>
+
+    </div>
+</section>
+        
     </div><!-- End Main Content -->
 
     <!-- Bottom Navigation Bar -->
@@ -295,6 +373,29 @@
                 }
             }, 2000); // 2 seconds delay
         });
+        
+const slider = document.getElementById('cardScroll');
+
+let isDown = false;
+let startX;
+let scrollLeft;
+
+slider.addEventListener('mousedown', (e) => {
+  isDown = true;
+  startX = e.pageX - slider.offsetLeft;
+  scrollLeft = slider.scrollLeft;
+});
+
+slider.addEventListener('mouseleave', () => isDown = false);
+slider.addEventListener('mouseup', () => isDown = false);
+
+slider.addEventListener('mousemove', (e) => {
+  if (!isDown) return;
+  e.preventDefault();
+  const x = e.pageX - slider.offsetLeft;
+  const walk = (x - startX) * 1.5;
+  slider.scrollLeft = scrollLeft - walk;
+});
     </script>
 
 </body>
